@@ -1,0 +1,16 @@
+torch>=2.1.0
+transformers>=4.40.0,<5.0.0
+peft>=0.10.0
+accelerate>=0.28.0
+pycocoevalcap
+segeval
+seqeval
+scikit-learn
+scipy
+numpy
+tqdm
+tensorboardX
+tensorboard
+datasets
+safetensors
+bitsandbytes

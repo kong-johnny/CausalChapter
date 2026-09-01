@@ -1,0 +1,27 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*.so
+
+# Local environments
+.venv/
+venv/
+env/
+.conda/
+
+# External artifacts users should link/copy locally
+models/Qwen2.5-3B-Instruct/
+data/avlecture/
+
+# Large released checkpoint artifact (distributed separately)
+checkpoints/qwen2p5_3b_crossattn_clip_best/shared_lora/adapter_model.safetensors
+
+# Reproduction / ad-hoc outputs. Keep outputs/best_eval tracked as the reference output.
+outputs/reproduce_best/
+outputs/tmp*/
+outputs/*_scratch/
+
+# Logs
+*.log
+runs/
+wandb/

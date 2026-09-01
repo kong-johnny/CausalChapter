@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Qwen2.5-3B cross-attn experiment using AVLecture OCR/visual cache.
+
+This intentionally does not overwrite the old broken output_crossattn run.
+The OCR cache is timestamp-indexed and 768-dim, so VIS_DIM/VIS_CACHE_DIR must
+be overridden together.
+"""
+import sys
+from pathlib import Path
+
+if __name__ == "__main__" and __package__ is None:
+    __package__ = "generate"
+    _THIS_FILE = Path(__file__).resolve()
+    _PROJECT_ROOT = _THIS_FILE.parent.parent
+    if str(_PROJECT_ROOT) not in sys.path:
+        sys.path.insert(0, str(_PROJECT_ROOT))
+
+import generate.train as tr
+
+# Multimodal OCR cache config.
+tr.FUSION_MODE = "cross_attn"
+tr.VIS_CACHE_DIR = "/mnt/nas2/duanmo/data/avlecture/vis_ocr_cache/avlecture"
+tr.VIS_DIM = 768
+tr.NUM_QUERY_TOKENS = 8
+
+# Keep the strong 3B text setup, write into a fresh directory.
+tr.OUTPUT_DIR = "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_ocr_q8"
+tr.BASE_MODEL = "/mnt/nas2/duanmo/data/video_chapter/models/Qwen2.5-3B-Instruct"
+tr.EPOCHS = 2
+tr.EVAL_EVERY = 1
+tr.LORA_R = 64
+tr.LORA_ALPHA = 128
+tr.LR = 5e-5
+tr.WARMUP_RATIO = 0.0
+tr.USE_FEWSHOT = True
+tr.FEWSHOT_NUM = 3
+
+if __name__ == "__main__":
+    tr.main()

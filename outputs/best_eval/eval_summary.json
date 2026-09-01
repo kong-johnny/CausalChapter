@@ -1,0 +1,10 @@
+{
+  "checkpoint": "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+  "eval_scope": "pred",
+  "gt_boundary": null,
+  "pred_boundary": {
+    "CIDEr": 111.19,
+    "METEOR": 20.18,
+    "SODA_c": 21.66
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "base_model": "/mnt/nas2/duanmo/data/video_chapter/models/Qwen2.5-3B-Instruct",
+  "fusion_mode": "cross_attn",
+  "causal_mode": "light",
+  "num_query_tokens": 8,
+  "best_pred_boundary": {
+    "CIDEr": 96.43,
+    "METEOR": 19.13,
+    "SODA": 19.76
+  }
+}
