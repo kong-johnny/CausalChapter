@@ -52,7 +52,7 @@ file at:
 checkpoints/qwen2p5_3b_crossattn_clip_best/shared_lora/adapter_model.safetensors
 ```
 
-Download link: **to be added**.
+Download link: [BNU Cloud](https://pan.bnu.edu.cn/l/G1atzW).
 
 The expected SHA-256 checksum is recorded in `MANIFEST.sha256`.
 
@@ -73,15 +73,23 @@ ln -s /absolute/path/to/Qwen2.5-3B-Instruct models/Qwen2.5-3B-Instruct
 
 The fixed release uses the 3B model.  It is **not** a 7B checkpoint.
 
-### 2. Dataset and visual cache
+### 2. Datasets
 
-Prepare AVLecture-style files under:
+Download the source data from the official repositories:
 
-```text
-CausalChapter/data/avlecture/
-```
+- [AVLectures](https://github.com/Darshansingh11/AVLectures)
+- [VidChapters-7M](https://github.com/antoyang/VidChapters)
 
-Required for reproducing the released evaluation:
+Raw videos are not redistributed in this repository. Follow the download
+instructions and terms of use provided by each dataset.
+
+#### AVLecture
+
+Download the courses with segmentation annotations from AVLectures. Combine
+the subtitles/ASR with the provided chapter timestamps, and normalize each
+lecture into an ordered transcript with its chapter boundaries and chapter
+descriptions. For the released AVLecture evaluation, place the processed files
+and visual cache at:
 
 ```text
 data/avlecture/test.jsonl
@@ -89,21 +97,28 @@ data/avlecture/test_subheading_abstract.jsonl
 data/avlecture/vis2d_cache/avlecture/
 ```
 
-Optional training / validation files used by the training scripts include:
+`test.jsonl` stores the utterance-level transcript and timestamps;
+`test_subheading_abstract.jsonl` stores the corresponding chapter segments and
+descriptions. Extract one 512-dimensional visual feature per utterance or
+sampled timestamp and save it as
+`vis2d_cache/avlecture/<video-id>-<index>.npy`. The loader accepts either dense
+utterance indices or integer timestamps.
 
-```text
-data/avlecture/train_subheading_abstract_mixed_youhuahou.jsonl
-data/avlecture/dev_subheading_abstract_mixed_youhuahou.jsonl
-data/avlecture/train_mixed_youhuahou.jsonl
-data/avlecture/dev_mixed_youhuahou.jsonl
-```
-
-If your dataset is stored elsewhere:
+If the processed AVLecture directory is stored elsewhere, link it into the
+repository:
 
 ```bash
 cd /path/to/CausalChapter
 ln -s /absolute/path/to/avlecture data/avlecture
 ```
+
+#### VidChapters-7M
+
+Follow the official VidChapters-7M repository to download its annotations and
+ASR transcripts and run the supplied preprocessing scripts. Retain, for each
+video, the ordered transcript, chapter timestamps, and chapter titles, then
+extract the visual features and map the processed records to the same fields
+used above. Raw YouTube videos should remain outside this repository.
 
 ## Quick start
 
