@@ -40,6 +40,15 @@ GT training targets remain ordinary supervised labels; GT boundaries must not
 enter dev/test generation. The new LCDS training independently used train245
 and dev35 and is not implicated by this generator-specific builder.
 
+The independent `generate/train_clean.py` entry point and
+`scripts/run_clean_generator.sh` now implement this policy without importing
+the historical trainer. Both train and dev generation use predicted
+boundaries, and CSSE sees all predicted train chapters before reference labels
+are attached for gradient loss. Nine new input/preflight tests pass locally;
+no neural smoke or training has run yet because the AIS tunnel disconnected.
+See `CLEAN_GENERATOR_TRAINING.md` for the predefined fresh-base experiment,
+artifact hashes, selection rule, and remaining runtime validation.
+
 The first fresh GitHub clone attempt failed with an HTTPS receive timeout /
 early EOF before LFS verification. A separate shallow HTTP/1.1 retry was
 started only after confirming the first parent had exited. Download success
