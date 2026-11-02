@@ -10,14 +10,15 @@ from pathlib import Path
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--text", required=True)
+    parser.add_argument("--text", required=True, nargs="+")
     parser.add_argument("--cache", required=True)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     video_keys = set()
-    for line in Path(args.text).read_text(encoding="utf-8").splitlines():
-        eid = json.loads(line)["example_id"]
-        video_keys.update([eid, eid.replace("@@", "_"), eid.replace("@@", "--"), eid.split("@@")[-1]])
+    for text_path in args.text:
+        for line in Path(text_path).read_text(encoding="utf-8").splitlines():
+            eid = json.loads(line)["example_id"]
+            video_keys.update([eid, eid.replace("@@", "_"), eid.replace("@@", "--"), eid.split("@@")[-1]])
     files = sorted(path for path in Path(args.cache).glob("*.npy") if path.stem.rsplit("-", 1)[0] in video_keys)
     if not files:
         raise ValueError("No evaluation features found")

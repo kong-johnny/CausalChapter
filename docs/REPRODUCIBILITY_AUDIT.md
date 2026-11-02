@@ -104,8 +104,8 @@ At the same threshold/gap, end localization gives F1@5s=22.30 and
 matched MAE@30s=7.53s. This is a changed, explicitly recorded decoder—not
 an improvement in the underlying utterance-label classifier. The evaluation
 entry point exports actual chapter intervals for the selected anchor so the
-reported localization must also be used by downstream inference. Final test
-and new-LCDS end-to-end generation remain pending.
+reported localization must also be used by downstream inference. The frozen
+final test is reported below; new-LCDS end-to-end generation remains pending.
 
 ## Frozen final test and clone run
 
