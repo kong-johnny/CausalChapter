@@ -60,6 +60,14 @@ CIDEr=108.89, METEOR=19.89, SODA_c=21.82, versus historical saved scores
 111.19 / 20.18 / 21.66. All 301 generated titles were nonempty.
 Raw results are saved under `outputs/verified_ppu_20261102/`; this was not
 an end-to-end run using the newly recomputed boundary file.
+Of the 301 titles, 240 exactly match the historical strings and 61 differ.
+For example, “Pion Decay: Chiral vs. Helicity States” becomes “Pion Decay
+and Chiral vs. Helicity States”, whereas “Spinor projection and gauge-coupling
+unification” becomes “Reduction of vector–axial coupling via spinor
+projection”. The former is largely wording drift; the latter changes topic
+emphasis. Thus aggregate metric proximity alone does not establish identical
+behavior. These test comparisons are diagnostic only and are not used to
+select the new segmentation model or tune its hyperparameters.
 
 The historical generation visual cache covers only two of the 70 test
 videos; its loader substitutes zero visual features for missing videos.
