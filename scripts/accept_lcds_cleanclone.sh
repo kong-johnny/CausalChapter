@@ -10,7 +10,7 @@ git_safe() {
   python3 -c 'import os,signal,sys; signal.signal(signal.SIGCHLD,signal.SIG_DFL); os.execvp("git", ["git", *sys.argv[1:]])' "$@"
 }
 export GIT_LFS_SKIP_SMUDGE=1 GIT_PAGER=cat
-git_safe clone --single-branch --branch codex/reproducible-release \
+git_safe -c http.version=HTTP/1.1 clone --depth 1 --single-branch --branch codex/reproducible-release \
   https://github.com/kong-johnny/CausalChapter.git "$CC_CLEAN_CLONE"
 cd "$CC_CLEAN_CLONE"
 git_safe lfs install --local

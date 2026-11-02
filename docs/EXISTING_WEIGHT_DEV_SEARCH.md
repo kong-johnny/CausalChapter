@@ -1,5 +1,13 @@
 # Existing-weight and decoding search: predicted chapters only
 
+**Audit override:** the historical generator training builder combines train
+and dev, and its old training loop selects on test. Existing-adapter provenance
+is not sufficient to treat this dev sweep as clean holdout model selection.
+Preserve all outputs for diagnosis, but do not use these scores to qualify a
+final release or promote the highest candidate. See the holdout isolation
+blocker in `REPRODUCIBILITY_AUDIT.md`. A clean train-only generator and
+predicted-only dev evaluation are now required before further selection.
+
 The user authorizes broad improvement attempts, starting with inexpensive
 hyperparameter changes and combinations of existing checkpoints. The hard
 constraint is **no ground-truth segmentation as generation input**.

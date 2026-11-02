@@ -66,6 +66,11 @@ def build_training_samples(
     alpha_text=0.30,
     min_match_score=0.0,
 ):
+    """Historical builder: combines train AND dev; not a clean-holdout API.
+
+    Retained for auditing old experiments only. New experiments must use
+    build_train_only_samples and an independent predicted-boundary dev scorer.
+    """
     assert train_mode in ["gt_only", "gt_plus_pred_raw", "gt_plus_pred_opt"]
 
     train_gt_rows = load_jsonl(train_gt_jsonl)
@@ -153,3 +158,21 @@ def build_training_samples(
     print(f"[DATA] source distribution: {dict(src_count)}")
 
     return samples
+
+
+def build_train_only_samples(train_gt_jsonl, train_text_jsonl, dev_text_jsonl):
+    """Construct gradient samples exclusively from audited train rows."""
+    from .split_audit import audited_train_rows
+    texts, annotations, manifest = audited_train_rows(
+        train_text_jsonl, train_gt_jsonl, dev_text_jsonl)
+    text_map = build_example_map(texts)
+    samples = []
+    for row in annotations:
+        eid = row["example_id"]
+        if eid not in text_map:
+            raise ValueError("Exact training annotation/transcript ID mismatch")
+        samples.extend(build_gt_segments(row, text_map[eid]))
+    train_ids = {row["example_id"] for row in texts}
+    if any(sample["example_id"] not in train_ids for sample in samples):
+        raise ValueError("Non-train example entered gradient samples")
+    return samples, manifest

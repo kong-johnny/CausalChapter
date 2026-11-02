@@ -1,5 +1,50 @@
 # Reproducibility audit (2026-11-02)
 
+## Generator holdout isolation blocker
+
+The historical `generate/data/sample_builder.py::build_training_samples`
+appends **both** train and dev GT segments to its returned gradient sample
+list. `generate/train.py` consumes that list in both passes. Its original
+checkpoint-selection path scores the test split each epoch. These code paths
+do not constitute train/dev-only model selection, regardless of whether raw
+train and dev JSONL IDs are disjoint. The recovered August 31 multimodal
+training log explicitly reports both “Build GT train samples” and “Build GT
+dev samples”, then truncates the combined list to 800 samples. Its inherited
+warm-start provenance remains unresolved; truncation means it is not valid
+to assert that this particular continuation necessarily trained on all dev
+samples. Exact historical execution/provenance of every adapter is not yet
+established.
+
+The existing text-only adapter gives unusually high scores on the first eight
+dev videos (beam-5 CIDEr 636.79, METEOR 46.23, SODA_c 55.02). Cases include
+near-verbatim reference titles across several chapters of the first ODE
+video. This is an **audit signal**, not proof by itself of contamination and
+not an accepted performance improvement. Those dev results and the earlier
+cross-attention sweep are quarantined from clean-holdout selection pending
+historical provenance. Do not proceed from this sweep to a performance claim
+or select a final checkpoint using its dev scores.
+
+The old builder is retained and explicitly labeled historical. A separate
+`build_train_only_samples` API now audits canonical IDs (including the known
+`__predaug` suffix), normalized full-transcript duplicates, and annotation
+membership before constructing samples solely from train. Four regression
+tests pass. The packaged original split has 245 train / 35 dev videos with
+zero canonical-ID or normalized-transcript intersections. This check does not
+certify unknown historical weights or rule out all near-duplicates.
+
+Next clean generator experiments must start from the official base model
+(not an unverified inherited adapter), use only original train examples for
+gradients, select using **all predicted dev chapters** with fixed real times,
+retain CSSE, and never load test or run oracle generation during training.
+GT training targets remain ordinary supervised labels; GT boundaries must not
+enter dev/test generation. The new LCDS training independently used train245
+and dev35 and is not implicated by this generator-specific builder.
+
+The first fresh GitHub clone attempt failed with an HTTPS receive timeout /
+early EOF before LFS verification. A separate shallow HTTP/1.1 retry was
+started only after confirming the first parent had exited. Download success
+and end-to-end acceptance remain unclaimed.
+
 ## CIDEr discrepancy investigation
 
 Re-scoring the **same 329 fixed generated titles** gives CIDEr=89.2520
