@@ -1,0 +1,25 @@
+{
+  "diagnostic_only": true,
+  "fixed_outputs": "/mnt/nas2/duanmo/data/CausalChapter_lcds_reconstruction_20261102/generation_strict/eval_details_pred.jsonl",
+  "videos": 70,
+  "generated_titles": 329,
+  "reference_titles": 369,
+  "alignment_profiles": {
+    "recorded": {
+      "CIDEr": 89.25201764797524,
+      "caption_pairs": 291
+    },
+    "lexical": {
+      "CIDEr": 99.7604073450396,
+      "caption_pairs": 302
+    },
+    "temporal_positive": {
+      "CIDEr": 89.25201764797524,
+      "caption_pairs": 291
+    },
+    "temporal_unfiltered": {
+      "CIDEr": 86.30335393574346,
+      "caption_pairs": 302
+    }
+  }
+}

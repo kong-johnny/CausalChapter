@@ -2,6 +2,15 @@
 
 ## Current user priority: usable AVL checkpoint release
 
+**Latest override:** after seeing strict CIDEr=89.25, the user requests
+investigation and renewed comparable performance validation before formal
+release/main integration. Do not treat the earlier usability-only approval
+below as permission to present an underperforming pipeline as accepted.
+Diagnostic results stay on record, including lower scores; no fabricated,
+suppressed, or selectively relabeled metrics. Candidate artifact transfer to
+the work branch is distinct from a promoted release. The current F1=59.14
+checkpoint remains preserved while the CIDEr discrepancy is investigated.
+
 The latest user request is to validate the existing F1=59.14 checkpoint and,
 if usable, publish it on GitHub. **Outperforming the paper is no longer a
 prerequisite for publishing this usable AVL version.** The earlier

@@ -1,0 +1,17 @@
+{
+  "diagnostic_only": true,
+  "fixed_outputs": "outputs/reproduce_best/eval_details_pred.jsonl",
+  "videos": 70,
+  "generated_titles": 301,
+  "reference_titles": 301,
+  "alignment_profiles": {
+    "recorded": {
+      "CIDEr": 108.89112096004163,
+      "caption_pairs": 301
+    },
+    "lexical": {
+      "CIDEr": 108.89112096004163,
+      "caption_pairs": 301
+    }
+  }
+}

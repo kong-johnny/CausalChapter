@@ -1,5 +1,23 @@
 # Reproducibility audit (2026-11-02)
 
+## CIDEr discrepancy investigation
+
+Re-scoring the **same 329 fixed generated titles** gives CIDEr=89.2520
+with positive temporal-IoU matching (291 pairs), versus 99.7604 with lexical
+Hungarian matching (302 pairs). No text was regenerated. Independently
+re-scoring the historical-profile saved output reproduces 108.8911 exactly
+(301 pairs). This verifies the CIDEr implementation on the saved records and
+isolates a substantial alignment-protocol contribution; it does not establish
+that all remaining differences are evaluation-only.
+
+A controlled paper-code-profile run is now evaluating the new LCDS boundaries
+with the original generation preprocessing and historical visual cache,
+holding generator weights and decode settings fixed. This is a diagnostic
+comparison against the original code profile, not a way to choose whichever
+scoring rule produces the largest number. Strict results remain available;
+they cannot be substituted into a legacy comparison or concealed. Formal
+release/main integration is on hold pending comparable validation.
+
 This document distinguishes recovered artifacts, validated behavior, and
 remaining release blockers. It must not be read as a successful reproduction
 of every paper table.
