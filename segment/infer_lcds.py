@@ -32,7 +32,8 @@ def main():
     device = torch.device(("cuda" if torch.cuda.is_available() else "cpu") if args.device == "auto" else args.device)
     tokenizer = AutoTokenizer.from_pretrained(checkpoint / "tokenizer", local_files_only=True)
     model = LongformerLCDS(None, config["hidden_size"], config["window_size"],
-                           config["freeze_encoder"], encoder_config=config["encoder_config"])
+                           config["freeze_encoder"], encoder_config=config["encoder_config"],
+                           visual_radius=config.get("visual_radius"))
     model.load_state_dict(torch.load(checkpoint / "best.pt", map_location="cpu", weights_only=True), strict=True)
     model.to(device)
     rows = read_rows(args.text)

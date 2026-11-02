@@ -39,6 +39,24 @@ class LCDSTest(unittest.TestCase):
         self.assertEqual(output["logits"].shape, (9, 2))
         self.assertTrue(torch.equal(output["logits"][:, 0], output["base_logits"][:, 0]))
 
+    def test_global_visual_attention_is_permutation_invariant(self):
+        torch.manual_seed(42)
+        head = LCDSBoundaryHead(8, 4, 8, window_size=2).eval()
+        text, visual = torch.randn(9, 8), torch.randn(9, 4)
+        original = head(text, visual)["logits"]
+        permuted = head(text, visual.flip(0))["logits"]
+        self.assertTrue(torch.allclose(original, permuted, atol=1e-5))
+
+    def test_local_visual_attention_preserves_alignment(self):
+        torch.manual_seed(42)
+        head = LCDSBoundaryHead(8, 4, 8, window_size=2, visual_radius=1).eval()
+        text, visual = torch.randn(9, 8), torch.randn(9, 4)
+        original = head(text, visual)["logits"]
+        permuted = head(text, visual.flip(0))["logits"]
+        self.assertFalse(torch.allclose(original, permuted, atol=1e-5))
+        original.sum().backward()
+        self.assertIsNotNone(head.visual_projection.weight.grad)
+
 
 if __name__ == "__main__":
     unittest.main()

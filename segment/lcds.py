@@ -69,8 +69,11 @@ class LocalDependencyShift(nn.Module):
 
 
 class LCDSBoundaryHead(nn.Module):
-    def __init__(self, text_dim: int, visual_dim: int = 512, hidden_size: int = 256, window_size: int = 5):
+    def __init__(self, text_dim: int, visual_dim: int = 512, hidden_size: int = 256, window_size: int = 5, visual_radius=None):
         super().__init__()
+        if visual_radius is not None and visual_radius < 0:
+            raise ValueError("visual_radius must be nonnegative or None")
+        self.visual_radius = visual_radius
         self.text_projection = nn.Linear(text_dim, hidden_size)
         self.visual_projection = nn.Linear(visual_dim, hidden_size)
         self.cross_attention = nn.MultiheadAttention(hidden_size, num_heads=4, batch_first=True)
@@ -81,7 +84,12 @@ class LCDSBoundaryHead(nn.Module):
     def forward(self, text_features, visual_features):
         text = self.text_projection(text_features)
         visual = self.visual_projection(visual_features)
-        attended, _ = self.cross_attention(text[None], visual[None], visual[None], need_weights=False)
+        attention_mask = None
+        if self.visual_radius is not None:
+            indices = torch.arange(text.shape[0], device=text.device)
+            attention_mask = (indices[:, None] - indices[None, :]).abs() > self.visual_radius
+        attended, _ = self.cross_attention(text[None], visual[None], visual[None],
+                                         attn_mask=attention_mask, need_weights=False)
         features = self.norm(text + attended[0])
         base = self.classifier(features)
         shift, reconstruction = self.dependency(features)

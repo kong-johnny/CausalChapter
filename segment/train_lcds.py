@@ -77,13 +77,13 @@ class VideoInputs:
 
 
 class LongformerLCDS(nn.Module):
-    def __init__(self, base_model, hidden_size, window_size, freeze_encoder=False, encoder_config=None, revision=None):
+    def __init__(self, base_model, hidden_size, window_size, freeze_encoder=False, encoder_config=None, revision=None, visual_radius=None):
         super().__init__()
         if encoder_config is None:
             self.encoder = AutoModel.from_pretrained(base_model, revision=revision)
         else:
             self.encoder = AutoModel.from_config(LongformerConfig.from_dict(encoder_config))
-        self.head = LCDSBoundaryHead(self.encoder.config.hidden_size, 512, hidden_size, window_size)
+        self.head = LCDSBoundaryHead(self.encoder.config.hidden_size, 512, hidden_size, window_size, visual_radius)
         self.freeze_encoder = freeze_encoder
         self.feature_cache = {}
         if freeze_encoder:
@@ -130,15 +130,15 @@ def collect_scores(model, inputs, device):
     return result
 
 
-def tune_dev(rows, scores):
+def tune_dev(rows, scores, boundary_anchor="end"):
     best = None
     for threshold in (0.2, 0.35, 0.5, 0.65, 0.8):
         for min_gap in (0, 2, 4, 6, 8):
             predictions = {eid: decode_probabilities(values, threshold, min_gap) for eid, values in scores.items()}
-            metrics = evaluate_internal_boundaries(rows, predictions)
+            metrics = evaluate_internal_boundaries(rows, predictions, boundary_anchor)
             key = (metrics["F1@30s"], metrics["internal_boundary_F1"], -metrics["boundary_count_MAE"])
             if best is None or key > best[0]:
-                best = key, {"threshold": threshold, "min_gap": min_gap}, metrics
+                best = key, {"threshold": threshold, "min_gap": min_gap, "boundary_anchor": boundary_anchor}, metrics
     return best
 
 
@@ -156,6 +156,8 @@ def main():
     parser.add_argument("--max-tokens", type=int, default=4096)
     parser.add_argument("--hidden-size", type=int, default=256)
     parser.add_argument("--window-size", type=int, default=5)
+    parser.add_argument("--visual-radius", type=int, default=None, help="Aligned visual attention radius; default preserves global attention")
+    parser.add_argument("--selection-anchor", choices=["start", "middle", "end"], default="end")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--freeze-encoder", action="store_true")
     parser.add_argument("--warm-start", help="A new LCDS checkpoint from a preceding training phase")
@@ -174,12 +176,14 @@ def main():
         saved = json.loads((output / "best_config.json").read_text())
         for key in ("base_model", "hidden_size", "window_size", "max_tokens", "freeze_encoder"):
             setattr(args, key, saved[key])
+        args.visual_radius = saved.get("visual_radius")
     tokenizer_source = output / "tokenizer" if args.mode == "evaluate" else args.base_model
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_source, revision=args.base_revision if args.mode == "train" else None)
     model = LongformerLCDS(
         args.base_model, args.hidden_size, args.window_size, args.freeze_encoder,
         encoder_config=saved["encoder_config"] if args.mode == "evaluate" else None,
         revision=args.base_revision,
+        visual_radius=args.visual_radius,
     ).to(device)
     if args.mode == "train" and args.warm_start:
         model.load_state_dict(torch.load(args.warm_start, map_location="cpu", weights_only=True), strict=True)
@@ -260,7 +264,7 @@ def main():
             if step % 10 == 0:
                 print(f"epoch={epoch + 1} video={step + 1}/{len(order)} loss={float(loss.detach()):.5f}", flush=True)
         scores = collect_scores(model, dev, device)
-        key, decoding, metrics = tune_dev(dev_rows, scores)
+        key, decoding, metrics = tune_dev(dev_rows, scores, args.selection_anchor)
         record = {"epoch": epoch + 1, "loss": total_loss / len(order), "dev": metrics, "decoding": decoding}
         with (output / "history.jsonl").open("a", encoding="utf-8") as stream:
             stream.write(json.dumps(record) + "\n")
