@@ -10,7 +10,10 @@ ground-truth and predicted boundaries.
 import os
 import sys
 import json
+import random
 from pathlib import Path
+
+import numpy as np
 
 if __name__ == "__main__" and __package__ is None:
     __package__ = "generate"
@@ -173,6 +176,12 @@ def load_checkpoint(checkpoint_dir, base_model, tokenizer):
     return model, model
 
 def main():
+    seed = int(os.environ.get("CC_SEED", "42"))
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     print("=" * 60)

@@ -1,0 +1,20 @@
+{
+  "architecture": "Qwen2.5-3B-Instruct + LoRA + binary boundary head",
+  "classification_position": "last token of each utterance",
+  "base_model": "Qwen/Qwen2.5-3B-Instruct",
+  "max_sequence_length": 4096,
+  "lora_r": 64,
+  "lora_alpha": 128,
+  "lora_dropout": 0.05,
+  "lora_target_modules": ["q_proj", "k_proj", "v_proj", "o_proj"],
+  "non_boundary_class_weight": 0.35,
+  "boundary_class_weight": 0.65,
+  "decode_threshold": 0.35,
+  "minimum_boundary_gap_utterances": 6,
+  "seed": 42,
+  "checkpoint_sha256": {
+    "lora_adapter/adapter_model.safetensors": "3ca363f0f82b4988dcd071c9420f15d4de2348c2611dba9e59317e685a99b985",
+    "lora_adapter/adapter_config.json": "1966e21bfe2084ac2250f1a05f11f8dd40b5b620b6f9171774f2de684dbb6307",
+    "classifier.pt": "34e0ec8b63e198f5e1b466b0046eef44c375fb946570e38e8a6a01c4bcde3c2b"
+  }
+}

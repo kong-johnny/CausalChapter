@@ -5,6 +5,11 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 export PYTHONUNBUFFERED=1
+export USE_TF=0
+export USE_FLAX=0
+export TOKENIZERS_PARALLELISM=false
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
+export CC_SEMANTIC_BACKEND="hashing"
 export CC_BASE_MODEL="${CC_BASE_MODEL:-$ROOT/models/Qwen2.5-3B-Instruct}"
 export CC_CHECKPOINT_DIR="${CC_CHECKPOINT_DIR:-$ROOT/checkpoints/qwen2p5_3b_crossattn_clip_best}"
 export CC_TEST_PRED_BOUNDARY="${CC_TEST_PRED_BOUNDARY:-$ROOT/boundaries/boundaries_12_thr0.35_gap6.jsonl}"

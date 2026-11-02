@@ -4,57 +4,60 @@
 > **Title:** CausalChapter: Improving Long-Form Video Chaptering with Interventional Dependency Modeling  
 > **Conference:** EMNLP 2026
 
+The source code is released under the MIT License. Dataset files and the
+Qwen2.5 base model remain subject to their respective upstream licenses.
+
 ## Environment setup
 
 ### Tested environment
 
-The best run was produced with the following environment:
+The 2026-11-02 evaluation was run in an isolated environment on the author's
+PPU server:
 
 ```text
-Python       3.10.13
-PyTorch      2.9.1+cu128
+Python       3.12.3
+PyTorch      2.9.0 (PPU runtime)
 Transformers 4.57.1
 PEFT         0.15.2
 Accelerate   1.0.1
 NumPy        1.26.4
 Safetensors  0.7.0
-GPU          NVIDIA A100-SXM4-80GB
-Driver       470.82.01
+pycocoevalcap 1.2
+Java         OpenJDK 8
 ```
 
 ### Install
 
 ```bash
+git lfs install
+git clone https://github.com/kong-johnny/CausalChapter.git
 cd /path/to/CausalChapter
-conda create -n causalchapter python=3.10 -y
+git lfs pull
+conda env create -f environment.yml
 conda activate causalchapter
-pip install -r requirements.txt
+bash scripts/verify_artifacts.sh
 ```
 
-If you want the closest environment to the released run, pin the core packages manually after creating the environment:
-
-```bash
-pip install torch==2.9.1 transformers==4.57.1 peft==0.15.2 accelerate==1.0.1 numpy==1.26.4 safetensors==0.7.0
-pip install -r requirements.txt
-```
-
-Depending on your CUDA runtime and cluster image, you may need to install the matching PyTorch wheel from the official PyTorch index instead of the generic command above.
+The public environment file uses upstream PyTorch; PPU users must retain the
+framework supplied by their PPU SDK. CUDA and CPU clean-install acceptance is
+pending. Cross-device bitwise equality after retraining has not been
+established. See [the audit](docs/REPRODUCIBILITY_AUDIT.md) for measured results
+and unresolved paper-table discrepancies.
 
 ## Prepare external model and data
 
-### Released CausalChapter checkpoint
+### Released checkpoints
 
-The best Qwen2.5-3B CausalChapter checkpoint is distributed separately because
-the LoRA weight file exceeds GitHub's single-file limit. Place the downloaded
-file at:
+The release packaging uses Git LFS for these checkpoint paths:
 
 ```text
+checkpoints/segment_qwen2p5_3b_endpos_z035/
 checkpoints/qwen2p5_3b_crossattn_clip_best/shared_lora/adapter_model.safetensors
 ```
 
-Download link: [BNU Cloud](https://pan.bnu.edu.cn/l/G1atzW).
-
-The expected SHA-256 checksum is recorded in `MANIFEST.sha256`.
+Their expected SHA-256 checksums and all released evaluation artifacts are in
+`MANIFEST.sha256`. `scripts/verify_artifacts.sh` checks every byte before an
+evaluation starts.
 
 ### 1. Base model
 
@@ -85,11 +88,15 @@ instructions and terms of use provided by each dataset.
 
 #### AVLecture
 
-Download the courses with segmentation annotations from AVLectures. Combine
-the subtitles/ASR with the provided chapter timestamps, and normalize each
-lecture into an ordered transcript with its chapter boundaries and chapter
-descriptions. For the released AVLecture evaluation, place the processed files
-and visual cache at:
+The exact processed train/dev/test JSONL files are included under
+`data/avlecture/`, with provenance in `data/PROVENANCE.md`. Prepare the released
+evaluation cache with:
+
+```bash
+python scripts/prepare_eval_features.py
+```
+
+The evaluation inputs are:
 
 ```text
 data/avlecture/test.jsonl
@@ -99,18 +106,15 @@ data/avlecture/vis2d_cache/avlecture/
 
 `test.jsonl` stores the utterance-level transcript and timestamps;
 `test_subheading_abstract.jsonl` stores the corresponding chapter segments and
-descriptions. Extract one 512-dimensional visual feature per utterance or
-sampled timestamp and save it as
-`vis2d_cache/avlecture/<video-id>-<index>.npy`. The loader accepts either dense
-utterance indices or integer timestamps.
+descriptions. The historical release cache contains visual features for only
+2 of 70 test videos; the historical loader supplies zeros for the rest. This
+records the behavior of the existing checkpoint and does not establish full
+multimodal coverage. A separate complete cache recovered from backup is used
+for the new LCDS reconstruction.
 
-If the processed AVLecture directory is stored elsewhere, link it into the
-repository:
-
-```bash
-cd /path/to/CausalChapter
-ln -s /absolute/path/to/avlecture data/avlecture
-```
+Use a fresh clone for the historical release profile. Mixing extra visual
+features into that cache changes the inputs and is rejected by the preparation
+script.
 
 #### VidChapters-7M
 
@@ -125,7 +129,7 @@ used above. Raw YouTube videos should remain outside this repository.
 ```bash
 cd /path/to/CausalChapter
 bash scripts/verify_artifacts.sh
-bash scripts/reproduce_best.sh
+bash scripts/reproduce_all.sh
 ```
 
 By default, the reproduction output is written to:
@@ -134,11 +138,88 @@ By default, the reproduction output is written to:
 outputs/reproduce_best/
 ```
 
-The script sets all key environment variables internally.  You can override paths when needed:
+This runs the released segmenter first and feeds its predicted boundaries to
+the released title/summary generator. Segmentation-only and generation-only
+runs are also available:
+
+```bash
+bash scripts/reproduce_segmentation.sh
+bash scripts/reproduce_best.sh
+```
+
+The scripts set all released hyperparameters internally. You can override
+paths when needed:
 
 ```bash
 CC_BASE_MODEL=/path/to/Qwen2.5-3B-Instruct \
 CC_VIS_CACHE_DIR=/path/to/vis2d_cache/avlecture \
 CC_EVAL_SAVE_DIR=outputs/my_reproduce_run \
 bash scripts/reproduce_best.sh
+```
+
+### Released segmentation configuration
+
+The released segmenter classifies the final token of each utterance, so the
+causal Qwen backbone has observed the full utterance before making a boundary
+decision. It uses LoRA rank 64, class weight 0.35, probability threshold 0.35,
+and a minimum gap of 6 utterances. The complete machine-readable configuration
+is `checkpoints/segment_qwen2p5_3b_endpos_z035/release_config.json`.
+
+To evaluate the committed boundary artifact without a GPU:
+
+```bash
+python -m segment.evaluate_boundaries \
+  --boundaries boundaries/boundaries_12_thr0.35_gap6.jsonl \
+  --text data/avlecture/test.jsonl \
+  --ground-truth data/avlecture/test_subheading_abstract.jsonl
+```
+
+### Reproducibility contract
+
+- The historical checkpoint selection protocol is being audited. The legacy
+  training scripts evaluate the test split during training; they must not be
+  described as development-only model selection.
+- All release weights and reference outputs are checksum-verified.
+- `environment.yml` is a candidate pinned environment pending clean-install
+  validation. Every runnable
+  script accepts path overrides instead of depending on server paths.
+- The historical generator reference is CIDEr 111.19, METEOR 20.18, SODA-c
+  21.66. Re-evaluation on the current PPU produced 108.89, 19.89, 21.82 using
+  the same fixed historical predicted boundaries. These are distinct measured
+  runs; the latter does not establish exact reproduction of the former.
+
+### Validate decoding without a GPU
+
+```bash
+python -m segment.replay_scores \
+  --scores outputs/segment_reference/scores.jsonl \
+  --output outputs/replayed_boundaries.jsonl \
+  --expected boundaries/boundaries_12_thr0.35_gap6.jsonl
+```
+
+This reproduces all 70 historical boundary records byte for byte. It validates
+decoding, not neural inference or retraining.
+
+### New manuscript LCDS reconstruction
+
+`segment/lcds.py` implements zero-mask interventions, cosine changes between
+predicted following windows, local dependency drops, and a learnable
+boundary-class logit bias. The Longformer + CLIP implementation and training
+entry point are a new reconstruction, not the missing historical F1=56.72
+checkpoint. Core tests cover masking, alignment, gradients, and independence
+from ground-truth labels during prediction.
+
+The new run uses original train/dev splits, pins the initial Longformer
+revision, selects decoding parameters on dev only, and saves only the best
+checkpoint. Full visual coverage is required; the historical 2-video cache is
+insufficient for training this model.
+
+```bash
+CC_TRAIN_VIS_CACHE=/path/to/complete/visual/cache \
+  bash scripts/train_lcds_reconstruction.sh
+
+# After freezing the configuration, evaluate test separately:
+python -m segment.train_lcds evaluate --split test \
+  --output outputs/lcds_reconstruction \
+  --visual-cache /path/to/complete/visual/cache
 ```

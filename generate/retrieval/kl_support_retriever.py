@@ -57,6 +57,9 @@ class KLSupportRetriever:
             "/mnt/nas2/duanmo/weights/all-MiniLM-L6-v2",
         )
         self._encoder = None
+        self.semantic_backend = os.environ.get("CC_SEMANTIC_BACKEND", "auto")
+        if self.semantic_backend not in {"auto", "hashing", "minilm"}:
+            raise ValueError("CC_SEMANTIC_BACKEND must be auto, hashing, or minilm")
         self._video_key = None
         self._segments = None
         self._embeddings = None
@@ -78,7 +81,10 @@ class KLSupportRetriever:
             # case we fall back to a deterministic local hashing-TFIDF encoder
             # so KL-CSSE pass2 can still build causal support candidates instead
             # of crashing after pass1.
-            if self.sentence_encoder_path and os.path.exists(self.sentence_encoder_path):
+            available = self.sentence_encoder_path and os.path.exists(self.sentence_encoder_path)
+            if self.semantic_backend == "minilm" and not available:
+                raise FileNotFoundError(f"Explicit MiniLM backend requires {self.sentence_encoder_path}")
+            if available and self.semantic_backend != "hashing":
                 from sentence_transformers import SentenceTransformer
 
                 self._encoder = SentenceTransformer(
@@ -86,10 +92,7 @@ class KLSupportRetriever:
                     device="cpu",
                 )
             else:
-                print(
-                    f"[WARN] sentence encoder path not found: {self.sentence_encoder_path}; "
-                    "using local HashingVectorizer fallback for semantic candidates."
-                )
+                print("[SEMANTIC] HashingVectorizer backend (512 dimensions, word 1-2 grams)")
 
                 class _HashingEncoder:
                     def __init__(self, n_features=512):

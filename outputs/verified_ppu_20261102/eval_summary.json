@@ -1,0 +1,10 @@
+{
+  "checkpoint": "/tmp/CausalChapter-repro-20261102/checkpoints/qwen2p5_3b_crossattn_clip_best",
+  "eval_scope": "pred",
+  "gt_boundary": null,
+  "pred_boundary": {
+    "CIDEr": 108.89,
+    "METEOR": 19.89,
+    "SODA_c": 21.82
+  }
+}
