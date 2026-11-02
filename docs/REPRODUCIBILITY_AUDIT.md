@@ -172,3 +172,19 @@ python3 -c 'import os, signal; signal.signal(signal.SIGCHLD, signal.SIG_DFL); os
 
 This is an environment-specific workaround, not a reason to bypass artifact
 hash validation or to disable LFS for ordinary clones.
+
+## Annotation-free usability smoke test
+
+The packaged `segment.infer_lcds` entry point completed a real development
+video on CPU using only example ID, transcript, utterance timestamps, and
+visual features. No chapter label or annotation fields were passed. Its
+decoded boundaries exactly match the frozen dev output; maximum probability
+difference versus the PPU run is 0.00004183. It exported contiguous positive
+chapter intervals. The saved receipt is
+`outputs/acceptance_20261102/release_smoke/acceptance.json`.
+
+This establishes one-video inference usability, not full CPU benchmark speed,
+upstream-PyTorch clean-install acceptance, or fresh-GitHub-download validation.
+Those distinctions remain explicit. The current user priority is publishing
+this usable **AVL-domain** checkpoint, without waiting for a better-than-paper
+claim. For other data domains, retrain both segmentation and generation.
