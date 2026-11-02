@@ -121,3 +121,19 @@ and new-LCDS end-to-end generation remain pending.
 Cross-device bitwise equality after retraining is a separate requirement from
 re-evaluating fixed checkpoint bytes. A release should state hardware and
 numeric tolerances supported by actual repeated runs.
+
+## Remote shell diagnostic
+
+The AIS `prun` session produced Git LFS filter/index errors even after all
+downloaded bytes passed SHA-256 validation. Direct `git-lfs clean` succeeded;
+resetting inherited `SIGCHLD` handling to its default before executing Git
+also made the same filtered `git diff --quiet` succeed. This isolates at least
+that failure to remote process handling, not corrupted release weights.
+For this diagnostic in the affected remote session:
+
+```bash
+python3 -c 'import os, signal; signal.signal(signal.SIGCHLD, signal.SIG_DFL); os.execvp("git", ["git", "lfs", "pull"])'
+```
+
+This is an environment-specific workaround, not a reason to bypass artifact
+hash validation or to disable LFS for ordinary clones.
