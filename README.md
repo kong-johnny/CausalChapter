@@ -7,6 +7,11 @@
 The source code is released under the MIT License. Dataset files and the
 Qwen2.5 base model remain subject to their respective upstream licenses.
 
+This audited release is currently on **`codex/reproducible-release`**, not
+`main`. It contains recovered Qwen checkpoints and a newly trained LCDS
+reconstruction. The exact historical causal checkpoint was not recovered;
+the new weights are not a claim of identical historical paper reproduction.
+
 ## Environment setup
 
 ### Tested environment
@@ -30,7 +35,7 @@ Java         OpenJDK 8
 
 ```bash
 git lfs install
-git clone https://github.com/kong-johnny/CausalChapter.git
+git clone --branch codex/reproducible-release https://github.com/kong-johnny/CausalChapter.git
 cd /path/to/CausalChapter
 git lfs pull
 conda env create -f environment.yml
@@ -53,6 +58,7 @@ The release packaging uses Git LFS for these checkpoint paths:
 ```text
 checkpoints/segment_qwen2p5_3b_endpos_z035/
 checkpoints/qwen2p5_3b_crossattn_clip_best/shared_lora/adapter_model.safetensors
+checkpoints/lcds_longformer_reconstruction/
 ```
 
 Their expected SHA-256 checksums and all released evaluation artifacts are in
@@ -125,6 +131,42 @@ extract the visual features and map the processed records to the same fields
 used above. Raw YouTube videos should remain outside this repository.
 
 ## Quick start
+
+### New LCDS reconstruction
+
+The checkpoint includes its Longformer encoder, boundary/dependency heads,
+tokenizer, and frozen dev-only decoder. An additional base Longformer download
+is not required for inference. Extract its complete feature cache separately
+from the historical two-video cache:
+
+```bash
+python scripts/prepare_eval_features.py \
+  --archive data/avlecture/lcds_visual_features.tar.gz --destination data/lcds
+USE_TF=0 USE_FLAX=0 OMP_NUM_THREADS=1 python -m segment.infer_lcds \
+  --checkpoint checkpoints/lcds_longformer_reconstruction \
+  --text data/avlecture/test.jsonl \
+  --visual-cache data/lcds/vis2d_cache/avlecture \
+  --output outputs/lcds_inference
+```
+
+This inference entry point does not load chapter annotations. Custom inputs
+need ordered `example_id`, `text`, and `stet` JSONL fields plus matching 512D
+per-utterance visual features; raw video/ASR/feature extraction is not performed
+by this command. It exports boundary labels, actual contiguous chapter times,
+and probabilities. Fresh-clone acceptance of this new entry point is pending.
+
+The frozen 70-video test has internal boundary P/R/F1 of
+63.71/55.18/59.14%, and time-domain F1 at ±5/10/30 seconds of
+47.31/63.80/69.18%. Matched error at 30 seconds is 4.60s. These are
+new reconstruction results, not the historical model's metric row.
+
+### Historical Qwen profile (legacy evaluation)
+
+The commands below preserve the historical evaluation protocol. It filters
+predicted segments using annotations before generation and uses predicted
+times for reference events; its SODA score must not be presented as strict
+end-to-end timing quality. The separate strict generation path retains all
+chapters and true reference times; see the audit for details.
 
 ```bash
 cd /path/to/CausalChapter
@@ -218,8 +260,17 @@ insufficient for training this model.
 CC_TRAIN_VIS_CACHE=/path/to/complete/visual/cache \
   bash scripts/train_lcds_reconstruction.sh
 
-# After freezing the configuration, evaluate test separately:
-python -m segment.train_lcds evaluate --split test \
+# A new run: freeze its own dev configuration before a final test.
+# The released frozen configuration is in outputs/lcds_reconstruction/.
+python scripts/evaluate_lcds_release.py \
   --output outputs/lcds_reconstruction \
-  --visual-cache /path/to/complete/visual/cache
+  --data-dir data/avlecture \
+  --visual-cache /path/to/complete/visual/cache \
+  --decoding-config outputs/lcds_reconstruction/dev_decoding_tuning.json
 ```
+
+The gate defaults to dev-only verification. `--final-test` explicitly enables
+one test evaluation after it passes and creates an audit marker that prevents
+silent repeated test runs. For an independently retrained checkpoint, first
+collect its dev scores and run `scripts/tune_lcds_dev.py`; do not assume a
+decoder selected for different weights is optimal.

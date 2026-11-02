@@ -1,3 +1,5 @@
 checkpoints/segment_qwen2p5_3b_endpos_z035/lora_adapter/adapter_model.safetensors filter=lfs diff=lfs merge=lfs -text
 checkpoints/qwen2p5_3b_crossattn_clip_best/shared_lora/adapter_model.safetensors filter=lfs diff=lfs merge=lfs -text
 data/avlecture/eval_visual_features.tar.gz filter=lfs diff=lfs merge=lfs -text
+data/avlecture/lcds_visual_features.tar.gz filter=lfs diff=lfs merge=lfs -text
+checkpoints/lcds_longformer_reconstruction/best.pt filter=lfs diff=lfs merge=lfs -text

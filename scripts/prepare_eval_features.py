@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Verify and safely extract the exact released evaluation visual cache."""
 import hashlib
+import argparse
 import json
 import os
 import tarfile
@@ -9,14 +10,19 @@ from pathlib import Path
 
 
 def main():
-    data = Path(__file__).resolve().parents[1] / "data" / "avlecture"
-    archive_path = data / "eval_visual_features.tar.gz"
-    manifest = json.loads(archive_path.with_suffix(".gz.files.json").read_text())
+    root = Path(__file__).resolve().parents[1]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--archive", type=Path, default=root / "data/avlecture/eval_visual_features.tar.gz")
+    parser.add_argument("--destination", type=Path, default=root / "data/avlecture")
+    args = parser.parse_args()
+    data = args.destination
+    archive_path = args.archive
+    manifest = json.loads(Path(str(archive_path) + ".files.json").read_text())
     seen = set()
     with tarfile.open(archive_path, "r:gz") as archive:
         for entry in archive:
             name = entry.name
-            if not entry.isfile() or name not in manifest:
+            if not entry.isfile() or name not in manifest or name in seen:
                 raise ValueError(f"Unexpected archive member: {name}")
             target = (data / name).resolve()
             if not target.is_relative_to(data.resolve()):

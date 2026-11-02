@@ -20,6 +20,9 @@ data/avlecture/*
 !data/avlecture/test_subheading_abstract.jsonl
 !data/avlecture/eval_visual_features.tar.gz
 !data/avlecture/eval_visual_features.tar.gz.files.json
+!data/avlecture/lcds_visual_features.tar.gz
+!data/avlecture/lcds_visual_features.tar.gz.files.json
+data/lcds/
 
 # Released large checkpoint artifacts are managed with Git LFS.
 

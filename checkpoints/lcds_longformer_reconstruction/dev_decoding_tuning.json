@@ -1,0 +1,125 @@
+{
+  "selection_split": "dev",
+  "selection_objective": "F1@30s, then exact internal F1, then lower count MAE, then lower matched time MAE",
+  "dev_sha256": "96b26448b0058274e69e2121d0b4d8ec59028b2bfbddcea6076a6eb0f685e830",
+  "scores_sha256": "7872acd43ba7c9fce4bad003d38d02f5d1ec3a785ed4ca9829b59897660a1687",
+  "candidate_count": 399,
+  "selected": {
+    "decoding": {
+      "threshold": 0.75,
+      "min_gap": 8,
+      "boundary_anchor": "middle"
+    },
+    "metrics": {
+      "videos": 35,
+      "boundary_anchor": "middle",
+      "internal_boundary_P": 70.8955223880597,
+      "internal_boundary_R": 70.37037037037037,
+      "internal_boundary_F1": 70.63197026022304,
+      "predicted_boundaries": 134,
+      "reference_boundaries": 135,
+      "boundary_count_MAE": 0.8857142857142857,
+      "P@5s": 56.71641791044776,
+      "R@5s": 56.2962962962963,
+      "F1@5s": 56.50557620817844,
+      "matched_MAE@5s": 2.36588815789477,
+      "P@10s": 76.11940298507463,
+      "R@10s": 75.55555555555556,
+      "F1@10s": 75.8364312267658,
+      "matched_MAE@10s": 3.3532892156862952,
+      "P@30s": 78.35820895522389,
+      "R@30s": 77.77777777777779,
+      "F1@30s": 78.06691449814126,
+      "matched_MAE@30s": 3.6296380952380836
+    }
+  },
+  "best_per_anchor": {
+    "start": {
+      "decoding": {
+        "threshold": 0.75,
+        "min_gap": 8,
+        "boundary_anchor": "start"
+      },
+      "metrics": {
+        "videos": 35,
+        "boundary_anchor": "start",
+        "internal_boundary_P": 70.8955223880597,
+        "internal_boundary_R": 70.37037037037037,
+        "internal_boundary_F1": 70.63197026022304,
+        "predicted_boundaries": 134,
+        "reference_boundaries": 135,
+        "boundary_count_MAE": 0.8857142857142857,
+        "P@5s": 41.7910447761194,
+        "R@5s": 41.48148148148148,
+        "F1@5s": 41.63568773234201,
+        "matched_MAE@5s": 2.172107142857136,
+        "P@10s": 67.16417910447761,
+        "R@10s": 66.66666666666666,
+        "F1@10s": 66.91449814126393,
+        "matched_MAE@10s": 4.220611111111159,
+        "P@30s": 77.61194029850746,
+        "R@30s": 77.03703703703704,
+        "F1@30s": 77.32342007434944,
+        "matched_MAE@30s": 5.285134615384677
+      }
+    },
+    "middle": {
+      "decoding": {
+        "threshold": 0.75,
+        "min_gap": 8,
+        "boundary_anchor": "middle"
+      },
+      "metrics": {
+        "videos": 35,
+        "boundary_anchor": "middle",
+        "internal_boundary_P": 70.8955223880597,
+        "internal_boundary_R": 70.37037037037037,
+        "internal_boundary_F1": 70.63197026022304,
+        "predicted_boundaries": 134,
+        "reference_boundaries": 135,
+        "boundary_count_MAE": 0.8857142857142857,
+        "P@5s": 56.71641791044776,
+        "R@5s": 56.2962962962963,
+        "F1@5s": 56.50557620817844,
+        "matched_MAE@5s": 2.36588815789477,
+        "P@10s": 76.11940298507463,
+        "R@10s": 75.55555555555556,
+        "F1@10s": 75.8364312267658,
+        "matched_MAE@10s": 3.3532892156862952,
+        "P@30s": 78.35820895522389,
+        "R@30s": 77.77777777777779,
+        "F1@30s": 78.06691449814126,
+        "matched_MAE@30s": 3.6296380952380836
+      }
+    },
+    "end": {
+      "decoding": {
+        "threshold": 0.75,
+        "min_gap": 8,
+        "boundary_anchor": "end"
+      },
+      "metrics": {
+        "videos": 35,
+        "boundary_anchor": "end",
+        "internal_boundary_P": 70.8955223880597,
+        "internal_boundary_R": 70.37037037037037,
+        "internal_boundary_F1": 70.63197026022304,
+        "predicted_boundaries": 134,
+        "reference_boundaries": 135,
+        "boundary_count_MAE": 0.8857142857142857,
+        "P@5s": 22.388059701492537,
+        "R@5s": 22.22222222222222,
+        "F1@5s": 22.304832713754646,
+        "matched_MAE@5s": 2.6091999999999143,
+        "P@10s": 56.71641791044776,
+        "R@10s": 56.2962962962963,
+        "F1@10s": 56.50557620817844,
+        "matched_MAE@10s": 5.589013157894645,
+        "P@30s": 78.35820895522389,
+        "R@30s": 77.77777777777779,
+        "F1@30s": 78.06691449814126,
+        "matched_MAE@30s": 7.53150476190468
+      }
+    }
+  }
+}
