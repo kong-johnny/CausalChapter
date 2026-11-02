@@ -10,13 +10,17 @@ re-scoring the historical-profile saved output reproduces 108.8911 exactly
 isolates a substantial alignment-protocol contribution; it does not establish
 that all remaining differences are evaluation-only.
 
-A controlled paper-code-profile run is now evaluating the new LCDS boundaries
+A controlled paper-code-profile run was started to evaluate the new LCDS boundaries
 with the original generation preprocessing and historical visual cache,
 holding generator weights and decode settings fixed. This is a diagnostic
 comparison against the original code profile, not a way to choose whichever
 scoring rule produces the largest number. Strict results remain available;
 they cannot be substituted into a legacy comparison or concealed. Formal
 release/main integration is on hold pending comparable validation.
+The user then explicitly forbade any GT-assisted segmentation workflow; the
+old-profile diagnostic was cancelled before completion because its original
+builder GT-filters chapters. A new predicted-only dev search replaces it; see
+`EXISTING_WEIGHT_DEV_SEARCH.md`.
 
 This document distinguishes recovered artifacts, validated behavior, and
 remaining release blockers. It must not be read as a successful reproduction

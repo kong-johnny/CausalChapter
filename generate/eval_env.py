@@ -31,6 +31,7 @@ from .config.paths import (
 )
 from .data.vis_features import build_vis_index
 from .data.eval_data_builder import build_gt_eval_data, build_pred_eval_data, build_strict_pred_eval_data
+from .data.usage_guard import validate_evaluation_usage
 from .models.model_builder import build_multimodal_model
 from .evaluation.evaluator import eval_model
 
@@ -69,6 +70,7 @@ EVAL_SAVE_DIR = os.environ.get("CC_EVAL_SAVE_DIR", CHECKPOINT_DIR)
 TEST_PRED_BOUNDARY = os.environ.get("CC_TEST_PRED_BOUNDARY", TEST_PRED_BOUNDARY)
 EVAL_LIMIT = int(os.environ.get("CC_EVAL_LIMIT", "0"))
 EVAL_PROTOCOL = os.environ.get("CC_EVAL_PROTOCOL", "legacy")
+CAPTION_MATCHING = os.environ.get("CC_CAPTION_MATCHING", "temporal" if EVAL_PROTOCOL == "strict" else "lexical")
 # ═══════════════════════════════════════════════════════════════════
 
 
@@ -177,6 +179,10 @@ def load_checkpoint(checkpoint_dir, base_model, tokenizer):
     return model, model
 
 def main():
+    forbid_gt = os.environ.get("CC_FORBID_GT_SEGMENTS", "0") == "1"
+    validate_evaluation_usage(EVAL_SCOPE, EVAL_PROTOCOL, CAPTION_MATCHING, forbid_gt,
+                              os.environ.get("CC_SEARCH_DEV_ONLY", "0") == "1",
+                              TEST_TEXT_JSONL, TEST_GT_JSONL)
     seed = int(os.environ.get("CC_SEED", "42"))
     random.seed(seed)
     np.random.seed(seed)
@@ -213,10 +219,12 @@ def main():
     resolved_num_query_tokens = getattr(model_pass1, "resolved_num_query_tokens", NUM_QUERY_TOKENS)
     print(f"[VIS] cache_dir={VIS_CACHE_DIR_ENV}")
     vis_index = build_vis_index(VIS_CACHE_DIR_ENV)
-    gt_eval_data = build_gt_eval_data(TEST_GT_JSONL, TEST_TEXT_JSONL)
+    gt_eval_data = build_gt_eval_data(TEST_GT_JSONL, TEST_TEXT_JSONL) if EVAL_SCOPE in {"gt", "both"} else []
     if EVAL_PROTOCOL == "strict":
         pred_eval_data = build_strict_pred_eval_data(TEST_TEXT_JSONL, TEST_GT_JSONL, TEST_PRED_BOUNDARY,
                                                    os.environ.get("CC_CHAPTER_TIMES"))
+        for item in pred_eval_data:
+            item["caption_matching"] = CAPTION_MATCHING
         for item in gt_eval_data:
             item["evaluation_protocol"] = "strict"
             item["gt_events"] = [{"start": start, "end": end, "sentence": title}
@@ -328,7 +336,9 @@ def main():
         "checkpoint": CHECKPOINT_DIR,
         "eval_scope": EVAL_SCOPE,
         "evaluation_protocol": EVAL_PROTOCOL,
-        "caption_matching": "temporal IoU; matched pairs only" if EVAL_PROTOCOL == "strict" else "legacy lexical matching",
+        "caption_matching": CAPTION_MATCHING,
+        "gt_segmentation_forbidden": forbid_gt,
+        "text_input": TEST_TEXT_JSONL,
         "gt_boundary": None if cider_gt is None else {"CIDEr": round(cider_gt, 2), "METEOR": round(meteor_gt, 2), "SODA_c": round(soda_gt, 2)},
         "pred_boundary": None if cider_pred is None else {"CIDEr": round(cider_pred, 2), "METEOR": round(meteor_pred, 2), "SODA_c": round(soda_pred, 2)},
     }

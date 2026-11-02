@@ -13,7 +13,7 @@ DATA_DIR = os.path.join(_PROJECT_ROOT, "data", "avlecture")
 # ---- Ground-truth annotation files ----
 TRAIN_GT_JSONL = os.path.join(DATA_DIR, "train_subheading_abstract_mixed_youhuahou.jsonl")
 DEV_GT_JSONL = os.path.join(DATA_DIR, "dev_subheading_abstract_mixed_youhuahou.jsonl")
-TEST_GT_JSONL = os.path.join(DATA_DIR, "test_subheading_abstract.jsonl")
+TEST_GT_JSONL = os.environ.get("CC_EVAL_GT_JSONL", os.path.join(DATA_DIR, "test_subheading_abstract.jsonl"))
 
 TRAIN_MIX_JSONL = os.path.join(DATA_DIR, "train_subheading_abstract_mixed_youhuahou.jsonl")
 DEV_MIX_JSONL = os.path.join(DATA_DIR, "dev_subheading_abstract_mixed_youhuahou.jsonl")
@@ -21,7 +21,7 @@ DEV_MIX_JSONL = os.path.join(DATA_DIR, "dev_subheading_abstract_mixed_youhuahou.
 # ---- Utterance-level text files ----
 TRAIN_TEXT_JSONL = os.path.join(DATA_DIR, "train_mixed_youhuahou.jsonl")
 DEV_TEXT_JSONL = os.path.join(DATA_DIR, "dev_mixed_youhuahou.jsonl")
-TEST_TEXT_JSONL = os.path.join(DATA_DIR, "test.jsonl")
+TEST_TEXT_JSONL = os.environ.get("CC_EVAL_TEXT_JSONL", os.path.join(DATA_DIR, "test.jsonl"))
 
 TRAIN_MIX_TEXT_JSONL = os.path.join(DATA_DIR, "train_mixed_youhuahou.jsonl")
 DEV_MIX_TEXT_JSONL = os.path.join(DATA_DIR, "dev_mixed_youhuahou.jsonl")
