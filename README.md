@@ -143,6 +143,16 @@ used above. Raw YouTube videos should remain outside this repository.
 
 ### New LCDS reconstruction
 
+For the complete **predicted segmentation → generation → strict evaluation**
+chain on AVL, with the Qwen base model prepared as described above:
+
+```bash
+bash scripts/reproduce_lcds.sh
+```
+
+This is the new release pipeline. It does not run oracle generation. The
+following command is useful when only segmentation is needed.
+
 The checkpoint includes its Longformer encoder, boundary/dependency heads,
 tokenizer, and frozen dev-only decoder. An additional base Longformer download
 is not required for inference. Extract its complete feature cache separately
