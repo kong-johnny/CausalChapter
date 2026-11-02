@@ -53,3 +53,21 @@ After stage 1, inspect actual dev cases, confirm promising combinations on all
 thresholds if warranted. No fabricated success criterion or predetermined
 score can replace the measured result. Formal release/main integration stays
 on hold until the comparable target and clone acceptance are satisfied.
+
+## Partial screening observation (2026-11-02)
+
+The four cross-attention candidates completed on the eight-video subset.
+Baseline CIDEr/METEOR/SODA_c was 54.82/18.43/15.57; wider beam gave
+60.18/19.13/16.12; top-5 support gave 55.57/18.57/15.44; repetition 1.05
+gave 54.82/18.43/15.57. These are dev-subset observations, not a final
+benchmark or evidence of surpassing the paper. Full-dev confirmation remains
+required after the other checkpoint is screened.
+
+The text-only candidate initially stopped before inference because its
+HF-5-style list-valued `extra_special_tokens` metadata is incompatible with
+the pinned HF-4 tokenizer constructor. A read-only loader adapter passes the
+list as additional special tokens, without rewriting checkpoint metadata.
+Three unit tests and actual remote tokenizer loading passed (151665 tokens,
+`<|im_start|>` ID 151644). The original parent and child were verified exited;
+the same locked plan resumed, reusing the four completed candidate summaries.
+The original failed candidate log is preserved as `run_failed_tokenizer.log`.

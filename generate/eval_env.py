@@ -200,8 +200,10 @@ def main():
     # Tokenizer: multimodal checkpoints contain added <VIS_i> tokens; text-only
     # checkpoints are also safe to load from here. Fall back to BASE_MODEL.
     tokenizer_source = CHECKPOINT_DIR if os.path.exists(os.path.join(CHECKPOINT_DIR, "tokenizer_config.json")) else BASE_MODEL
+    from .data.tokenizer_compat import tokenizer_compat_kwargs
     tokenizer = AutoTokenizer.from_pretrained(
-        tokenizer_source, trust_remote_code=True, local_files_only=True
+        tokenizer_source, trust_remote_code=True, local_files_only=True,
+        **tokenizer_compat_kwargs(tokenizer_source),
     )
     print(f"[TOKENIZER] loaded from {tokenizer_source} (vocab={len(tokenizer)})")
     if tokenizer.pad_token_id is None:
