@@ -19,3 +19,11 @@ class TimeMetricsTest(unittest.TestCase):
     def test_missing_video_is_an_error(self):
         with self.assertRaises(ValueError):
             evaluate_internal_boundaries([{"example_id": "v"}], {})
+
+    def test_anchor_is_explicit_and_does_not_change_exact_label_metric(self):
+        row = {"example_id": "v", "labels": [1, 0], "stet": [[0, 20], [20, 30]], "topic_end_seconds": [10, 30]}
+        end = evaluate_internal_boundaries([row], {"v": [1, 0]})
+        middle = evaluate_internal_boundaries([row], {"v": [1, 0]}, "middle")
+        self.assertEqual(end["F1@5s"], 0)
+        self.assertEqual(middle["F1@5s"], 100)
+        self.assertEqual(end["internal_boundary_F1"], middle["internal_boundary_F1"])

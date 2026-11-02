@@ -23,7 +23,9 @@ def prf(tp, predicted_count, reference_count):
     return {"P": 100 * precision, "R": 100 * recall, "F1": 200 * tp / max(predicted_count + reference_count, 1)}
 
 
-def evaluate_internal_boundaries(rows, predictions):
+def evaluate_internal_boundaries(rows, predictions, boundary_anchor="end"):
+    if boundary_anchor not in ("start", "middle", "end"):
+        raise ValueError("boundary_anchor must be start, middle, or end")
     if set(predictions) != {row["example_id"] for row in rows}:
         raise ValueError("Prediction video IDs must exactly match the evaluation split")
     exact_tp = predicted_count = reference_count = 0
@@ -41,7 +43,10 @@ def evaluate_internal_boundaries(rows, predictions):
         reference_count += len(r_indices)
         exact_tp += len(set(p_indices) & set(r_indices))
         count_errors.append(abs(len(p_indices) - len(r_indices)))
-        p_times = [float(row["stet"][index][1]) for index in p_indices]
+        p_times = []
+        for index in p_indices:
+            start, end = map(float, row["stet"][index])
+            p_times.append({"start": start, "middle": (start + end) / 2, "end": end}[boundary_anchor])
         # Evaluate localization against annotated chapter times when available.
         r_times = [float(value) for value in row.get("topic_end_seconds", [])[:-1]]
         if len(r_times) != len(r_indices):
@@ -52,6 +57,7 @@ def evaluate_internal_boundaries(rows, predictions):
             time_matches[tolerance][1] += error
     output = {
         "videos": len(rows),
+        "boundary_anchor": boundary_anchor,
         "internal_boundary_P": prf(exact_tp, predicted_count, reference_count)["P"],
         "internal_boundary_R": prf(exact_tp, predicted_count, reference_count)["R"],
         "internal_boundary_F1": prf(exact_tp, predicted_count, reference_count)["F1"],

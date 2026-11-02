@@ -160,6 +160,7 @@ def main():
     parser.add_argument("--freeze-encoder", action="store_true")
     parser.add_argument("--warm-start", help="A new LCDS checkpoint from a preceding training phase")
     parser.add_argument("--split", choices=["dev", "test"], default="dev")
+    parser.add_argument("--decoding-config", help="Frozen dev-only selection from scripts/tune_lcds_dev.py")
     args = parser.parse_args()
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -188,8 +189,32 @@ def main():
         rows = read_rows(Path(args.data_dir) / f"{args.split}.jsonl")
         inputs = VideoInputs(rows, tokenizer, args.visual_cache, args.max_tokens)
         scores = collect_scores(model, inputs, device)
-        predictions = {eid: decode_probabilities(values, saved["decoding"]["threshold"], saved["decoding"]["min_gap"]) for eid, values in scores.items()}
-        metrics = evaluate_internal_boundaries(rows, predictions)
+        (output / f"{args.split}_scores.json").write_text(json.dumps(scores) + "\n")
+        decoding = saved["decoding"]
+        if args.decoding_config:
+            selection = json.loads(Path(args.decoding_config).read_text())
+            if selection["selection_split"] != "dev" or selection["dev_sha256"] != saved["dev_sha256"]:
+                raise ValueError("Decoding selection must use the checkpoint's exact development split")
+            decoding = selection["selected"]["decoding"]
+        anchor = decoding.get("boundary_anchor", "end")
+        predictions = {eid: decode_probabilities(values, decoding["threshold"], decoding["min_gap"]) for eid, values in scores.items()}
+        metrics = evaluate_internal_boundaries(rows, predictions, anchor)
+        time_records = []
+        for row in rows:
+            indices = [index for index, value in enumerate(predictions[row["example_id"]][:-1]) if value]
+            times = []
+            for index in indices:
+                start, end = map(float, row["stet"][index])
+                times.append({"start": start, "middle": (start + end) / 2, "end": end}[anchor])
+            # Export actual decoder times, not merely a changed metric convention.
+            # No ground-truth chapter timestamps enter this output.
+            duration = float(row["stet"][-1][1])
+            endpoints = [0.0, *times, duration]
+            time_records.append({"example_id": row["example_id"], "boundary_anchor": anchor,
+                                 "boundary_indices": indices, "boundary_seconds": times,
+                                 "chapters": [[start, end] for start, end in zip(endpoints, endpoints[1:])]})
+        (output / f"{args.split}_chapter_times.jsonl").write_text("".join(json.dumps(record) + "\n" for record in time_records))
+        metrics["decoding"] = decoding
         (output / f"{args.split}_metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
         save_boundaries({eid: {"predictions": int_to_label(labels)} for eid, labels in predictions.items()}, str(output / f"{args.split}_boundaries.jsonl"))
         print(json.dumps(metrics, indent=2), flush=True)

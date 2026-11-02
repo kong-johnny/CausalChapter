@@ -81,7 +81,31 @@ backups. The new LCDS implementation passed eleven unit tests and a real
 video encoder/head forward-backward smoke test. Training from the pinned
 official Longformer initialization has started on train/dev only. This is a
 new manuscript reconstruction, not a recovered historical checkpoint; its
-quality is not established until development evaluation completes.
+quality must be assessed separately from the historical paper run.
+
+## New LCDS development run (not final test)
+
+Ten epochs completed successfully. The selected epoch 10 checkpoint gives
+internal-label F1=70.88 and time-domain F1@30s=77.89 on 35 development
+videos using the initial threshold 0.35 / gap 8 / utterance-end decoding.
+No test split was loaded by training. Only the best checkpoint is retained.
+
+Development cases expose a localization issue: even perfect processed labels
+placed at utterance ends have 6.75-second mean error against annotated chapter
+times, with only 34.81% within five seconds. Some positive utterances span
+the actual transition rather than ending at it. A midpoint decoder does not
+consult chapter annotations at inference and reduces this alignment-only
+mean error to 3.59 seconds on dev.
+
+An explicit 399-candidate **dev-only** search selects threshold 0.75, gap 8,
+and midpoint localization. It yields internal F1=70.63, F1@5s=56.51,
+F1@10s=75.84, F1@30s=78.07, count MAE=0.89, and matched MAE@30s=3.63s.
+At the same threshold/gap, end localization gives F1@5s=22.30 and
+matched MAE@30s=7.53s. This is a changed, explicitly recorded decoder—not
+an improvement in the underlying utterance-label classifier. The evaluation
+entry point exports actual chapter intervals for the selected anchor so the
+reported localization must also be used by downstream inference. Final test
+and new-LCDS end-to-end generation remain pending.
 
 ## Remaining acceptance checks
 
