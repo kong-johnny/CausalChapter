@@ -12,6 +12,15 @@ This audited release is currently on **`codex/reproducible-release`**, not
 reconstruction. The exact historical causal checkpoint was not recovered;
 the new weights are not a claim of identical historical paper reproduction.
 
+### Checkpoint scope: AVL / AVLecture
+
+The released segmentation and generation weights are trained/fine-tuned for
+**AVL (AVLecture)**. They are not advertised as domain-general or as
+VidChapters-trained checkpoints. For a different dataset or domain, retrain
+or fine-tune **both the segmenter and generator** using that domain's training
+data, and select its own configuration on a held-out development split.
+Downloading another dataset does not adapt these AVL weights automatically.
+
 ## Environment setup
 
 ### Tested environment

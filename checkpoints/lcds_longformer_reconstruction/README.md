@@ -1,5 +1,10 @@
 # New LCDS reconstruction
 
+Domain: **AVL / AVLecture**. These are AVL fine-tuned weights, not a
+cross-domain performance guarantee. When moving to a different dataset or
+domain, retrain/fine-tune both segmentation and generation components and
+select domain-specific settings on that domain's dev split.
+
 This is a newly trained Longformer + CLIP-feature boundary model, not the
 unrecovered historical causal checkpoint. The full encoder/head state is
 included in `best.pt`; no external base weights are required for inference.

@@ -1,5 +1,18 @@
 # Release acceptance: better-than-paper prediction pipeline
 
+## Current user priority: usable AVL checkpoint release
+
+The latest user request is to validate the existing F1=59.14 checkpoint and,
+if usable, publish it on GitHub. **Outperforming the paper is no longer a
+prerequisite for publishing this usable AVL version.** The earlier
+better-than-paper target below remains a separate research goal, not a reason
+to withhold a functioning checkpoint. Clearly label the measured protocol and
+limits; validate annotation-free inference, positive contiguous chapter
+intervals, artifacts and download instructions before declaring it usable.
+Release both modules explicitly as AVL-domain weights. Recommend retraining
+both modules for migration to another dataset/domain. Unstarted architecture
+ablation work is deferred while this release is validated and published.
+
 The user requests results above the paper followed by integration into the
 repository. This is a target and a merge gate, not an already-achieved result
 or a guarantee that experiments will attain a predetermined score.
