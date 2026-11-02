@@ -8,6 +8,7 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", default="MANIFEST.sha256")
+    parser.add_argument("--profile", choices=["all", "lcds"], default="all")
     args = parser.parse_args()
     failures = []
     for line in Path(args.manifest).read_text(encoding="utf-8").splitlines():
@@ -15,6 +16,9 @@ def main():
             continue
         expected, name = line.split(maxsplit=1)
         path = Path(name.strip())
+        if args.profile == "lcds" and not (str(path).startswith("checkpoints/lcds_longformer_reconstruction/")
+                                            or str(path).startswith("data/avlecture/lcds_visual_features.tar.gz")):
+            continue
         if not path.is_file():
             failures.append(f"MISSING: {path}; run git lfs pull for released weights")
             continue
