@@ -1,0 +1,32 @@
+{
+  "status": "dev validated; configuration frozen before test",
+  "checkpoint_sha256": "12a5b8f768b2e471bf7ef31855def41349e60fcf800503a7e63c7a36c0c74648",
+  "decoding_sha256": "0fa915904c1452fa06544bee52a68aa0d7ebdb7c9ac14ac4bab079619656eaf0",
+  "dev_metrics": {
+    "videos": 35,
+    "boundary_anchor": "middle",
+    "internal_boundary_P": 70.8955223880597,
+    "internal_boundary_R": 70.37037037037037,
+    "internal_boundary_F1": 70.63197026022304,
+    "predicted_boundaries": 134,
+    "reference_boundaries": 135,
+    "boundary_count_MAE": 0.8857142857142857,
+    "P@5s": 56.71641791044776,
+    "R@5s": 56.2962962962963,
+    "F1@5s": 56.50557620817844,
+    "matched_MAE@5s": 2.36588815789477,
+    "P@10s": 76.11940298507463,
+    "R@10s": 75.55555555555556,
+    "F1@10s": 75.8364312267658,
+    "matched_MAE@10s": 3.3532892156862952,
+    "P@30s": 78.35820895522389,
+    "R@30s": 77.77777777777779,
+    "F1@30s": 78.06691449814126,
+    "matched_MAE@30s": 3.6296380952380836,
+    "decoding": {
+      "threshold": 0.75,
+      "min_gap": 8,
+      "boundary_anchor": "middle"
+    }
+  }
+}

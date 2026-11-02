@@ -1,0 +1,27 @@
+{
+  "videos": 70,
+  "boundary_anchor": "middle",
+  "internal_boundary_P": 63.7065637065637,
+  "internal_boundary_R": 55.18394648829431,
+  "internal_boundary_F1": 59.13978494623656,
+  "predicted_boundaries": 259,
+  "reference_boundaries": 299,
+  "boundary_count_MAE": 1.3428571428571427,
+  "P@5s": 50.965250965250966,
+  "R@5s": 44.14715719063545,
+  "F1@5s": 47.31182795698925,
+  "matched_MAE@5s": 2.4147310606060515,
+  "P@10s": 68.72586872586872,
+  "R@10s": 59.53177257525084,
+  "F1@10s": 63.799283154121866,
+  "matched_MAE@10s": 3.415946629213487,
+  "P@30s": 74.5173745173745,
+  "R@30s": 64.54849498327759,
+  "F1@30s": 69.17562724014337,
+  "matched_MAE@30s": 4.595378238341996,
+  "decoding": {
+    "threshold": 0.75,
+    "min_gap": 8,
+    "boundary_anchor": "middle"
+  }
+}

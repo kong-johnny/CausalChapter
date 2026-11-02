@@ -6,6 +6,62 @@ from ..utils.io_utils import load_jsonl, build_example_map
 from ..data.segment_builder import build_gt_segments, segment_by_boundary, parse_stet_list, match_pred_segments_to_gt
 
 
+def build_strict_pred_eval_data(test_text_jsonl, test_gt_jsonl, test_pred_boundary, chapter_times=None):
+    """Keep every prediction; annotations never select generation inputs."""
+    text_rows = load_jsonl(test_text_jsonl)
+    gt_rows = load_jsonl(test_gt_jsonl)
+    pred_rows = load_jsonl(test_pred_boundary)
+    def index(rows):
+        result = {}
+        for row in rows:
+            eid = row["example_id"]
+            if isinstance(eid, list):
+                if len(eid) != 1:
+                    raise ValueError("Expected one video ID")
+                eid = eid[0]
+            if eid in result:
+                raise ValueError(f"Duplicate video ID: {eid}")
+            result[eid] = row
+        return result
+    text_map, gt_map, pred_map = map(index, (text_rows, gt_rows, pred_rows))
+    if set(text_map) != set(gt_map) or set(text_map) != set(pred_map):
+        raise ValueError("Strict evaluation requires exactly matching video IDs")
+    time_map = index(load_jsonl(chapter_times)) if chapter_times else None
+    if time_map is not None and set(time_map) != set(text_map):
+        raise ValueError("Chapter timeline IDs must match the evaluation split")
+    data = []
+    for eid, text in text_map.items():
+        labels = pred_map[eid]["predictions"]
+        if len(labels) != len(text["text"]):
+            raise ValueError(f"Boundary length mismatch: {eid}")
+        if any(value not in (0, 1, "O", "B-EOP") for value in labels):
+            raise ValueError(f"Invalid boundary label: {eid}")
+        predicted = segment_by_boundary(text["text"], parse_stet_list(text["stet"]), labels)
+        reference = build_gt_segments(gt_map[eid], text)
+        if not predicted or not reference:
+            raise ValueError(f"Empty strict prediction/reference video: {eid}")
+        if time_map is not None:
+            timeline = time_map[eid]
+            expected_indices = [i for i, value in enumerate(labels[:-1]) if value in (1, "B-EOP")]
+            if timeline["boundary_indices"] != expected_indices or len(timeline["chapters"]) != len(predicted):
+                raise ValueError(f"Timeline/boundary mismatch: {eid}")
+            previous_end = 0.0
+            for segment, (start, end) in zip(predicted, timeline["chapters"]):
+                if start != previous_end or end <= start:
+                    raise ValueError(f"Invalid timeline: {eid}")
+                segment["start_time"], segment["end_time"] = start, end
+                previous_end = end
+            if abs(previous_end - float(text["stet"][-1][1])) > 1e-5:
+                raise ValueError(f"Incomplete timeline: {eid}")
+        data.append({"example_id": eid, "evaluation_protocol": "strict",
+                     "segments": [s["segment_text"] for s in predicted],
+                     "spans": [(s["start_idx"], s["end_idx"]) for s in predicted],
+                     "times": [(s["start_time"], s["end_time"]) for s in predicted],
+                     "gt_titles": [s["target_subheading"] for s in reference],
+                     "gt_events": [{"start": s["start_time"], "end": s["end_time"], "sentence": s["target_subheading"]} for s in reference]})
+    return data
+
+
 def build_gt_eval_data(test_gt_jsonl, test_text_jsonl):
     gt_rows = load_jsonl(test_gt_jsonl)
     text_rows = load_jsonl(test_text_jsonl)

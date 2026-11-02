@@ -30,7 +30,7 @@ from .config.paths import (
     TEST_GT_JSONL, TEST_TEXT_JSONL, TEST_PRED_BOUNDARY, VIS_CACHE_DIR,
 )
 from .data.vis_features import build_vis_index
-from .data.eval_data_builder import build_gt_eval_data, build_pred_eval_data
+from .data.eval_data_builder import build_gt_eval_data, build_pred_eval_data, build_strict_pred_eval_data
 from .models.model_builder import build_multimodal_model
 from .evaluation.evaluator import eval_model
 
@@ -68,6 +68,7 @@ EVAL_SCOPE = os.environ.get("CC_EVAL_SCOPE", "both").lower()  # both|gt|pred
 EVAL_SAVE_DIR = os.environ.get("CC_EVAL_SAVE_DIR", CHECKPOINT_DIR)
 TEST_PRED_BOUNDARY = os.environ.get("CC_TEST_PRED_BOUNDARY", TEST_PRED_BOUNDARY)
 EVAL_LIMIT = int(os.environ.get("CC_EVAL_LIMIT", "0"))
+EVAL_PROTOCOL = os.environ.get("CC_EVAL_PROTOCOL", "legacy")
 # ═══════════════════════════════════════════════════════════════════
 
 
@@ -213,7 +214,17 @@ def main():
     print(f"[VIS] cache_dir={VIS_CACHE_DIR_ENV}")
     vis_index = build_vis_index(VIS_CACHE_DIR_ENV)
     gt_eval_data = build_gt_eval_data(TEST_GT_JSONL, TEST_TEXT_JSONL)
-    pred_eval_data = build_pred_eval_data(TEST_TEXT_JSONL, TEST_GT_JSONL, TEST_PRED_BOUNDARY)
+    if EVAL_PROTOCOL == "strict":
+        pred_eval_data = build_strict_pred_eval_data(TEST_TEXT_JSONL, TEST_GT_JSONL, TEST_PRED_BOUNDARY,
+                                                   os.environ.get("CC_CHAPTER_TIMES"))
+        for item in gt_eval_data:
+            item["evaluation_protocol"] = "strict"
+            item["gt_events"] = [{"start": start, "end": end, "sentence": title}
+                                 for (start, end), title in zip(item["times"], item["gt_titles"])]
+    elif EVAL_PROTOCOL == "legacy":
+        pred_eval_data = build_pred_eval_data(TEST_TEXT_JSONL, TEST_GT_JSONL, TEST_PRED_BOUNDARY)
+    else:
+        raise ValueError("CC_EVAL_PROTOCOL must be strict or legacy")
     if EVAL_LIMIT > 0:
         gt_eval_data = gt_eval_data[:EVAL_LIMIT]
         pred_eval_data = pred_eval_data[:EVAL_LIMIT]
@@ -316,6 +327,8 @@ def main():
     summary = {
         "checkpoint": CHECKPOINT_DIR,
         "eval_scope": EVAL_SCOPE,
+        "evaluation_protocol": EVAL_PROTOCOL,
+        "caption_matching": "temporal IoU; matched pairs only" if EVAL_PROTOCOL == "strict" else "legacy lexical matching",
         "gt_boundary": None if cider_gt is None else {"CIDEr": round(cider_gt, 2), "METEOR": round(meteor_gt, 2), "SODA_c": round(soda_gt, 2)},
         "pred_boundary": None if cider_pred is None else {"CIDEr": round(cider_pred, 2), "METEOR": round(meteor_pred, 2), "SODA_c": round(soda_pred, 2)},
     }

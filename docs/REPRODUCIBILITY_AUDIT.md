@@ -107,6 +107,41 @@ entry point exports actual chapter intervals for the selected anchor so the
 reported localization must also be used by downstream inference. Final test
 and new-LCDS end-to-end generation remain pending.
 
+## Frozen final test and clone run
+
+The frozen development reproduction gate passed before test execution, with
+the checkpoint and decoder hashes recorded in
+`outputs/acceptance_20261102/final_test_frozen.json`. One new-LCDS final test
+completed on 70 videos: internal P/R/F1=63.71/55.18/59.14, F1@5/10/30s=
+47.31/63.80/69.18, count MAE=1.34, matched MAE@30s=4.60s. These results
+are lower than dev and are not used to select another threshold/checkpoint.
+They are a new model result, not confirmation of the historical 56.72 row.
+
+The independent GitHub clone also completed its Qwen boundary-to-title run:
+CIDEr=107.02, METEOR=19.75, SODA_c=21.44, with 300 nonempty generated
+titles. These are **legacy-protocol** scores, not strict end-to-end scores.
+
+## Generation evaluation protocol limitation
+
+Inspection of the legacy data builder found that it Hungarian-matches
+predicted segments against annotations *before generation*, drops unmatched
+segments, and places reference title events at predicted timestamps. It also
+lexically matches generated titles to references for caption scoring. Thus
+its historical SODA_c does not independently measure true annotated boundary
+timing and must not be advertised as strict end-to-end temporal accuracy.
+The preserved historical profile remains available for audit, with this
+limitation explicit.
+
+The new opt-in `CC_EVAL_PROTOCOL=strict` path retains all predicted chapters,
+uses the actual frozen midpoint decoder intervals, and supplies every real
+annotated GT chapter and timestamp to SODA. Caption matching uses temporal
+IoU rather than reference-title wording. CIDEr/METEOR still describe matched
+caption pairs only; they are not standalone detection-recall metrics. Saved
+details include all predicted and reference events. Oracle and new-LCDS
+predicted-boundary generation are now being evaluated under this separate
+protocol with the complete visual cache. These scores are not directly
+comparable to the legacy profile.
+
 ## Remaining acceptance checks
 
 - Validate the final release code after its explicit semantic-backend and

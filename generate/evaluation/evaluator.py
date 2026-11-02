@@ -88,9 +88,18 @@ def eval_model(
         sim = np.zeros((len(preds), len(gt_titles)), dtype=np.float32)
         for i, p in enumerate(preds):
             for j, g in enumerate(gt_titles):
-                sim[i, j] = text_jaccard(p, g)
+                if item.get("evaluation_protocol") == "strict":
+                    event = item["gt_events"][j]
+                    start, end = times[i]
+                    overlap = max(0.0, min(end, event["end"]) - max(start, event["start"]))
+                    union = max(end, event["end"]) - min(start, event["start"])
+                    sim[i, j] = overlap / max(union, 1e-8)
+                else:
+                    sim[i, j] = text_jaccard(p, g)
 
         matches = hungarian_match(sim)
+        if item.get("evaluation_protocol") == "strict":
+            matches = [(pi, gj) for pi, gj in matches if sim[pi, gj] > 0]
         matched_pairs += len(matches)
 
         for pi, gj in matches:
@@ -109,6 +118,8 @@ def eval_model(
             "matches": [(int(pi), int(gj)) for pi, gj in matches],
             "epoch": epoch,
             "inference_info": _info,
+            "evaluation_protocol": item.get("evaluation_protocol", "legacy"),
+            "gt_events": item.get("gt_events"),
         })
 
         pred_events = []
