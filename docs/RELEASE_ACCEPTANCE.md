@@ -4,6 +4,14 @@ The user requests results above the paper followed by integration into the
 repository. This is a target and a merge gate, not an already-achieved result
 or a guarantee that experiments will attain a predetermined score.
 
+The user subsequently authorizes architecture and hyperparameter adaptation,
+including dataset-specific settings, as long as the implementation broadly
+retains the paper's mechanisms. Bit-for-bit or layer-for-layer duplication is
+not required. Preserve LCDS local dependency interventions and CSSE
+cross-segment support selection; disclose changed backbones, fusion, losses,
+training settings, and computational budgets. Architecture adaptation is not
+permission to alter the evaluation to obtain a preferred outcome.
+
 ## Comparable targets
 
 The current manuscript contains different configurations:
