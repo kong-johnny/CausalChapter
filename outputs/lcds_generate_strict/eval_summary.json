@@ -1,0 +1,16 @@
+{
+  "checkpoint": "/tmp/CausalChapter-repro-20261102/checkpoints/qwen2p5_3b_crossattn_clip_best",
+  "eval_scope": "both",
+  "evaluation_protocol": "strict",
+  "caption_matching": "temporal IoU; matched pairs only",
+  "gt_boundary": {
+    "CIDEr": 104.71,
+    "METEOR": 21.5,
+    "SODA_c": 23.61
+  },
+  "pred_boundary": {
+    "CIDEr": 89.25,
+    "METEOR": 19.29,
+    "SODA_c": 14.99
+  }
+}

@@ -169,6 +169,15 @@ The frozen 70-video test has internal boundary P/R/F1 of
 47.31/63.80/69.18%. Matched error at 30 seconds is 4.60s. These are
 new reconstruction results, not the historical model's metric row.
 
+The actual new-LCDS predicted-boundary → generation evaluation completed
+all 70 AVL videos with 329 nonempty titles. Under the separately documented
+strict protocol: CIDEr **89.25**, METEOR **19.29**, SODA_c **14.99**.
+CIDEr/METEOR are temporal-IoU-matched caption scores; SODA evaluates all
+events against real reference times. See `outputs/lcds_generate_strict/`.
+One-video annotation-free CPU inference also passed with exactly the same
+decoded boundaries as the frozen dev reference; full fresh-clone download
+acceptance is tracked in the audit.
+
 ### Historical Qwen profile (legacy evaluation)
 
 The commands below preserve the historical evaluation protocol. It filters

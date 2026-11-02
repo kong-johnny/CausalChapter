@@ -142,6 +142,15 @@ predicted-boundary generation are now being evaluated under this separate
 protocol with the complete visual cache. These scores are not directly
 comparable to the legacy profile.
 
+The strict run has now completed: predicted-boundary generation on all 70
+AVL videos outputs 329 titles, none empty, with 291 positive temporal-IoU
+caption matches. Scores are CIDEr=89.25, METEOR=19.29, SODA_c=14.99.
+CIDEr/METEOR describe matched caption pairs; SODA uses all predicted and true
+reference events. Saved details are under `outputs/lcds_generate_strict/`.
+The diagnostic oracle run is also retained there, but is not the release
+acceptance result. These measurements support a functioning AVL pipeline,
+not a claim that every published paper metric has been exceeded.
+
 ## Remaining acceptance checks
 
 - Validate the final release code after its explicit semantic-backend and
