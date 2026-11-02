@@ -41,3 +41,12 @@ class StrictGenerationDataTest(unittest.TestCase):
         self.paths[3].write_text(json.dumps(row) + "\n")
         with self.assertRaises(ValueError):
             build_strict_pred_eval_data(*map(str, self.paths))
+
+    def test_accepts_consistent_per_utterance_legacy_ids(self):
+        self.paths[2].write_text(json.dumps({"example_id": ["v"] * 4, "predictions": [1, 1, 0, 0]}) + "\n")
+        self.assertEqual(len(build_strict_pred_eval_data(*map(str, self.paths))[0]["segments"]), 3)
+
+    def test_rejects_mixed_legacy_ids(self):
+        self.paths[2].write_text(json.dumps({"example_id": ["v", "other", "v", "v"], "predictions": [1, 1, 0, 0]}) + "\n")
+        with self.assertRaises(ValueError):
+            build_strict_pred_eval_data(*map(str, self.paths))

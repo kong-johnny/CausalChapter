@@ -16,8 +16,11 @@ def build_strict_pred_eval_data(test_text_jsonl, test_gt_jsonl, test_pred_bounda
         for row in rows:
             eid = row["example_id"]
             if isinstance(eid, list):
-                if len(eid) != 1:
-                    raise ValueError("Expected one video ID")
+                # Legacy segment output repeats the same ID per utterance.
+                if not eid or any(value != eid[0] for value in eid):
+                    raise ValueError("Expected one consistent video ID")
+                if len(eid) != 1 and len(eid) != len(row.get("predictions", [])):
+                    raise ValueError("Repeated video IDs must match boundary length")
                 eid = eid[0]
             if eid in result:
                 raise ValueError(f"Duplicate video ID: {eid}")
