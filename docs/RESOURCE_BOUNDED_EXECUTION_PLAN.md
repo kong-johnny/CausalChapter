@@ -102,9 +102,11 @@ such a comparison alone does not establish exceeding the published row.
 
 ## Allocation deadline and durable handoff
 
-Exact allocation expiry is not yet known; a nonblocking question has been sent.
-Until answered, prioritize completion and best-checkpoint backup within the
-next 24 hours and avoid open-ended follow-on jobs. Before new expensive work,
+The user confirmed 25 hours remain on 2026-11-03 around 16:04 Asia/Shanghai.
+Use 2026-11-04 17:00 Asia/Shanghai as the conservative working deadline, with
+the last six hours (from 11:00) reserved for evaluation, transfer and handoff.
+Back up the current useful best before further experiments. Avoid open-ended
+follow-on jobs. Before new expensive work,
 require estimated runtime plus at least six hours of margin for evaluation,
 transfer and clone acceptance. If less time remains, preserve artifacts and
 handoff state instead of starting a run likely to be evicted.
