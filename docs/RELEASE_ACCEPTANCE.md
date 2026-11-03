@@ -1,6 +1,17 @@
 # Release acceptance: better-than-paper prediction pipeline
 
-## Current user priority: usable AVL checkpoint release
+## Latest acceptance decision (2026-11-03)
+
+The latest user request is to autonomously plan legitimate, efficient experiments
+whose complete predicted-boundary pipeline reaches or exceeds the appropriate
+paper configuration, then open-source the validated release. AIS access is
+time-limited; do not treat the objective as unlimited GPU authorization. Follow
+`RESOURCE_BOUNDED_EXECUTION_PLAN.md`. This requirement supersedes the earlier
+usability-only publication approval described below. Recovered artifacts may
+remain on the candidate branch, but main integration and a successful-reproduction
+claim require the comparison and clean-clone gates. Attainment is not guaranteed.
+
+## Historical decisions: usable AVL checkpoint release
 
 **Latest override:** after seeing strict CIDEr=89.25, the user requests
 investigation and renewed comparable performance validation before formal
@@ -79,5 +90,10 @@ notes remain documented in `REPRODUCIBILITY_AUDIT.md`.
 
 Current status: **not accepted**. New LCDS test internal F1=59.14 is not by
 itself proof of outperforming paper F1=56.72, because the boundary conventions
-are not established as identical. Strict predicted-boundary generation and
-fresh-clone acceptance of the new LCDS weights are still pending.
+are not established as identical. Fresh GitHub download, hashes, full feature
+extraction and annotation-free CPU LCDS smoke passed. The old-generator strict
+test run completed but did not establish a comparable paper win. Fresh-generator
+epoch 1 completed 35-video predicted-boundary dev evaluation with
+CIDEr/METEOR/SODA_c=99.6889/20.8240/18.0033 (strict events, lexical captions).
+Its three-epoch run is ongoing; full clean-generator clone acceptance remains
+pending. Do not confuse dev performance with the paper's test table.
