@@ -39,7 +39,7 @@ def build_strict_pred_eval_data(test_text_jsonl, test_gt_jsonl, test_pred_bounda
             raise ValueError(f"Boundary length mismatch: {eid}")
         if any(value not in (0, 1, "O", "B-EOP") for value in labels):
             raise ValueError(f"Invalid boundary label: {eid}")
-        predicted = segment_by_boundary(text["text"], parse_stet_list(text["stet"]), labels)
+        predicted = segment_by_boundary(text["text"], parse_stet_list(text["stet"]), labels, keep_empty=True)
         reference = build_gt_segments(gt_map[eid], text)
         if not predicted or not reference:
             raise ValueError(f"Empty strict prediction/reference video: {eid}")

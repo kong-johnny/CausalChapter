@@ -45,14 +45,27 @@ The independent `generate/train_clean.py` entry point and
 the historical trainer. Both train and dev generation use predicted
 boundaries, and CSSE sees all predicted train chapters before reference labels
 are attached for gradient loss. Nine new input/preflight tests pass locally;
-no neural smoke or training has run yet because the AIS tunnel disconnected.
+the real two-pass PPU smoke subsequently passed on 2026-11-03 after access
+returned to the original container, and fresh-base formal training started.
 See `CLEAN_GENERATOR_TRAINING.md` for the predefined fresh-base experiment,
 artifact hashes, selection rule, and remaining runtime validation.
 
 The first fresh GitHub clone attempt failed with an HTTPS receive timeout /
 early EOF before LFS verification. A separate shallow HTTP/1.1 retry was
-started only after confirming the first parent had exited. Download success
-and end-to-end acceptance remain unclaimed.
+started only after confirming the first parent had exited. The shallow retry
+completed from GitHub commit
+`f31587f97996ad24dd778a4656a85df3f9005237`: all new-LCDS artifact hashes
+passed, all 173,730 feature files were verified/extracted, and annotation-free
+CPU inference reproduced frozen dev boundaries (maximum probability
+difference 4.182755947e-05). This verifies new-LCDS download and inference,
+not the complete new generator chain or universal hardware equivalence.
+The receipt and search diagnostics are in `outputs/acceptance_20261103/`.
+
+After this public-download acceptance, exact redundant temporary model/cache
+transfer archives and a base64 manifest were removed (about 1.6 GB across
+local and remote storage). Canonical weights, release archives, GitHub
+artifacts, and the active clone/cache remain intact. These deleted temporary
+copies are not recoverable in place, but their canonical artifacts remain.
 
 ## CIDEr discrepancy investigation
 

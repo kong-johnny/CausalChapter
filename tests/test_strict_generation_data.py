@@ -50,3 +50,12 @@ class StrictGenerationDataTest(unittest.TestCase):
         self.paths[2].write_text(json.dumps({"example_id": ["v", "other", "v", "v"], "predictions": [1, 1, 0, 0]}) + "\n")
         with self.assertRaises(ValueError):
             build_strict_pred_eval_data(*map(str, self.paths))
+
+    def test_preserves_empty_predicted_chapter(self):
+        row = json.loads(self.paths[0].read_text())
+        row["text"][0] = "   "
+        self.paths[0].write_text(json.dumps(row) + "\n")
+        data = build_strict_pred_eval_data(*map(str, self.paths))[0]
+        self.assertEqual(data["segments"], ["", "two", "three four"])
+        self.assertEqual(data["times"], [(0, 5), (5, 15), (15, 40)])
+        self.assertEqual(len(data["segments"]), 3)

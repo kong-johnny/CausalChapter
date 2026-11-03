@@ -1,0 +1,7 @@
+{
+  "pass1_loss": 1.9676296710968018,
+  "pass2_loss": 4.418586254119873,
+  "checkpoint_saved": false,
+  "dev_scored": false,
+  "all_training_predictions_generated": true
+}

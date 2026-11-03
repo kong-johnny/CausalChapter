@@ -1,0 +1,18 @@
+{
+  "source_commit": "e8dfbe198a4e024a044dd8d89e7afeba16e365d0",
+  "source_hashes": {
+    "generate/train_clean.py": "87305eaed4e2608b54d551a38f89724d1bf0d53642915c62d584e0f6234f6275",
+    "generate/data/clean_training.py": "f240215fad0f012f55e4b88db5be4c8f24a275b621285147ace93f72d06a3808",
+    "scripts/run_clean_generator.sh": "fb807d9532451b47d34644787a3d87209032209e6063110c19e0fa9553940da3"
+  },
+  "pid": 67522,
+  "environment": {
+    "CC_LCDS_DEV_BOUNDARIES": "/mnt/nas2/duanmo/data/CausalChapter_lcds_reconstruction_20261102/dev_boundaries.jsonl",
+    "CC_BASE_MODEL": "/mnt/nas2/duanmo/data/video_chapter/models/Qwen2.5-3B-Instruct",
+    "CC_CLEAN_GENERATOR_ROOT": "/mnt/nas2/duanmo/data/CausalChapter_generator_clean_20261103",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CC_LCDS_DEV_TIMES": "/mnt/nas2/duanmo/data/CausalChapter_lcds_reconstruction_20261102/dev_chapter_times.jsonl",
+    "CC_FULL_VIS_CACHE": "/tmp/CausalChapter-fresh-lcds-20261102-retry1/data/lcds/vis2d_cache/avlecture",
+    "CC_LCDS_CHECKPOINT": "/tmp/CausalChapter-fresh-lcds-20261102-retry1/checkpoints/lcds_longformer_reconstruction"
+  }
+}

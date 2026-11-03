@@ -1,7 +1,7 @@
 # Clean train-only generator experiment
 
-Status: **implemented and locally guard-tested; neural smoke/training not yet
-run**. AIS access is waiting for a renewed SSH tunnel. This is not a reported
+Status (2026-11-03): **two-pass neural smoke passed; fresh-base formal training
+has started** on the original Torch 2.9 PPU environment. This is not a reported
 model improvement or an accepted release.
 
 ## Why a separate entry point
@@ -78,6 +78,17 @@ There is no claim of exact optimizer-state resume.
 
 Local validation: six pure-Python generation-input tests, three trainer-input
 audit tests, and four split-audit tests pass; CLI help and syntax compilation
-pass. GPU execution, numerical
-behavior, memory usage, and final quality remain **unverified** until the AIS
-smoke and train/dev experiments finish.
+pass. These and four usage guards also passed on AIS. The real GPU smoke
+completed one update per pass (losses 1.96763 and 4.41859), generated all
+predicted chapters of the smoke train video, did not score dev, and saved no
+checkpoint. The formal run reinitializes from the base afterward. Full train /
+dev quality and long-run stability remain unverified.
+
+The frozen segmenter generated 1,403 train chapters over 245 videos; 1,371
+receive loss targets under the fixed training-IoU rule. An initial pre-model
+failure exposed an empty trailing transcript chapter: the old segment builder
+dropped it, breaking the complete timeline. Strict construction now preserves
+empty predicted chapters, with a regression test; legacy construction keeps
+its original behavior. Prepared predictions were reused after the failed
+parent exited, but no generator checkpoint/optimizer state was resumed.
+Recovery logs preserve the original failure.

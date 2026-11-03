@@ -1,0 +1,178 @@
+[
+  {
+    "generator": "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+    "settings": {
+      "beams": 3,
+      "repetition": 1.005,
+      "topk": 3
+    },
+    "summary": {
+      "checkpoint": "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+      "eval_scope": "pred",
+      "evaluation_protocol": "strict",
+      "caption_matching": "lexical",
+      "gt_segmentation_forbidden": true,
+      "text_input": "/tmp/CausalChapter-repro-20261102/data/avlecture/dev.jsonl",
+      "gt_boundary": null,
+      "pred_boundary": {
+        "CIDEr": 54.82,
+        "METEOR": 18.43,
+        "SODA_c": 15.57
+      }
+    }
+  },
+  {
+    "generator": "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+    "settings": {
+      "beams": 5,
+      "repetition": 1.005,
+      "topk": 3
+    },
+    "summary": {
+      "checkpoint": "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+      "eval_scope": "pred",
+      "evaluation_protocol": "strict",
+      "caption_matching": "lexical",
+      "gt_segmentation_forbidden": true,
+      "text_input": "/tmp/CausalChapter-repro-20261102/data/avlecture/dev.jsonl",
+      "gt_boundary": null,
+      "pred_boundary": {
+        "CIDEr": 60.18,
+        "METEOR": 19.13,
+        "SODA_c": 16.12
+      }
+    }
+  },
+  {
+    "generator": "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+    "settings": {
+      "beams": 3,
+      "repetition": 1.005,
+      "topk": 5
+    },
+    "summary": {
+      "checkpoint": "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+      "eval_scope": "pred",
+      "evaluation_protocol": "strict",
+      "caption_matching": "lexical",
+      "gt_segmentation_forbidden": true,
+      "text_input": "/tmp/CausalChapter-repro-20261102/data/avlecture/dev.jsonl",
+      "gt_boundary": null,
+      "pred_boundary": {
+        "CIDEr": 55.57,
+        "METEOR": 18.57,
+        "SODA_c": 15.44
+      }
+    }
+  },
+  {
+    "generator": "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+    "settings": {
+      "beams": 3,
+      "repetition": 1.05,
+      "topk": 3
+    },
+    "summary": {
+      "checkpoint": "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+      "eval_scope": "pred",
+      "evaluation_protocol": "strict",
+      "caption_matching": "lexical",
+      "gt_segmentation_forbidden": true,
+      "text_input": "/tmp/CausalChapter-repro-20261102/data/avlecture/dev.jsonl",
+      "gt_boundary": null,
+      "pred_boundary": {
+        "CIDEr": 54.82,
+        "METEOR": 18.43,
+        "SODA_c": 15.57
+      }
+    }
+  },
+  {
+    "generator": "/mnt/nas2/duanmo/data/video_chapter/output/best",
+    "settings": {
+      "beams": 3,
+      "repetition": 1.005,
+      "topk": 3
+    },
+    "summary": {
+      "checkpoint": "/mnt/nas2/duanmo/data/video_chapter/output/best",
+      "eval_scope": "pred",
+      "evaluation_protocol": "strict",
+      "caption_matching": "lexical",
+      "gt_segmentation_forbidden": true,
+      "text_input": "/tmp/CausalChapter-repro-20261102/data/avlecture/dev.jsonl",
+      "gt_boundary": null,
+      "pred_boundary": {
+        "CIDEr": 589.04,
+        "METEOR": 45.15,
+        "SODA_c": 53.11
+      }
+    }
+  },
+  {
+    "generator": "/mnt/nas2/duanmo/data/video_chapter/output/best",
+    "settings": {
+      "beams": 5,
+      "repetition": 1.005,
+      "topk": 3
+    },
+    "summary": {
+      "checkpoint": "/mnt/nas2/duanmo/data/video_chapter/output/best",
+      "eval_scope": "pred",
+      "evaluation_protocol": "strict",
+      "caption_matching": "lexical",
+      "gt_segmentation_forbidden": true,
+      "text_input": "/tmp/CausalChapter-repro-20261102/data/avlecture/dev.jsonl",
+      "gt_boundary": null,
+      "pred_boundary": {
+        "CIDEr": 636.79,
+        "METEOR": 46.23,
+        "SODA_c": 55.02
+      }
+    }
+  },
+  {
+    "generator": "/mnt/nas2/duanmo/data/video_chapter/output/best",
+    "settings": {
+      "beams": 3,
+      "repetition": 1.005,
+      "topk": 5
+    },
+    "summary": {
+      "checkpoint": "/mnt/nas2/duanmo/data/video_chapter/output/best",
+      "eval_scope": "pred",
+      "evaluation_protocol": "strict",
+      "caption_matching": "lexical",
+      "gt_segmentation_forbidden": true,
+      "text_input": "/tmp/CausalChapter-repro-20261102/data/avlecture/dev.jsonl",
+      "gt_boundary": null,
+      "pred_boundary": {
+        "CIDEr": 589.04,
+        "METEOR": 45.15,
+        "SODA_c": 53.11
+      }
+    }
+  },
+  {
+    "generator": "/mnt/nas2/duanmo/data/video_chapter/output/best",
+    "settings": {
+      "beams": 3,
+      "repetition": 1.05,
+      "topk": 3
+    },
+    "summary": {
+      "checkpoint": "/mnt/nas2/duanmo/data/video_chapter/output/best",
+      "eval_scope": "pred",
+      "evaluation_protocol": "strict",
+      "caption_matching": "lexical",
+      "gt_segmentation_forbidden": true,
+      "text_input": "/tmp/CausalChapter-repro-20261102/data/avlecture/dev.jsonl",
+      "gt_boundary": null,
+      "pred_boundary": {
+        "CIDEr": 589.04,
+        "METEOR": 45.15,
+        "SODA_c": 53.11
+      }
+    }
+  }
+]

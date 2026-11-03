@@ -1,0 +1,41 @@
+{
+  "generator": [
+    "/mnt/nas2/duanmo/data/video_chapter/output_crossattn_clip_q8_textinit_joint_fast800_lora5e6_q1e4_top3_20260831_152838/best",
+    "/mnt/nas2/duanmo/data/video_chapter/output/best"
+  ],
+  "boundaries": "/mnt/nas2/duanmo/data/CausalChapter_lcds_reconstruction_20261102/dev_boundaries.jsonl",
+  "chapter_times": "/mnt/nas2/duanmo/data/CausalChapter_lcds_reconstruction_20261102/dev_chapter_times.jsonl",
+  "data_dir": "/tmp/CausalChapter-repro-20261102/data/avlecture",
+  "visual_cache": "/tmp/CausalChapter-assets/full_vis2d_cache",
+  "base_model": "/mnt/nas2/duanmo/data/video_chapter/models/Qwen2.5-3B-Instruct",
+  "output": "/mnt/nas2/duanmo/data/CausalChapter_dev_existing_sweep_20261102",
+  "limit": 8,
+  "split": "dev",
+  "gt_segmentation": "forbidden",
+  "caption_matching": "lexical, fixed before search to audit original CIDEr matching",
+  "temporal_evaluation": "all predictions and true reference timestamps",
+  "dev_sha256": "96b26448b0058274e69e2121d0b4d8ec59028b2bfbddcea6076a6eb0f685e830",
+  "boundary_sha256": "4333f88b5ec7d7c131b24e4c1823d686187762fd05ba652ad142bdf0b9803f64",
+  "settings": [
+    {
+      "beams": 3,
+      "repetition": 1.005,
+      "topk": 3
+    },
+    {
+      "beams": 5,
+      "repetition": 1.005,
+      "topk": 3
+    },
+    {
+      "beams": 3,
+      "repetition": 1.005,
+      "topk": 5
+    },
+    {
+      "beams": 3,
+      "repetition": 1.05,
+      "topk": 3
+    }
+  ]
+}

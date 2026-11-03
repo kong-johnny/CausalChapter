@@ -76,7 +76,7 @@ def build_gt_segments(gt_video, text_video):
     return segments
 
 
-def segment_by_boundary(utt_texts, stet_list, predictions):
+def segment_by_boundary(utt_texts, stet_list, predictions, keep_empty=False):
     n = len(utt_texts)
     if n == 0:
         return []
@@ -96,7 +96,7 @@ def segment_by_boundary(utt_texts, stet_list, predictions):
         if s >= e:
             continue
         seg_text = " ".join([normalize_text(x) for x in utt_texts[s:e]]).strip()
-        if len(seg_text) == 0:
+        if len(seg_text) == 0 and not keep_empty:
             continue
         start_time = stet_list[s][0] if len(stet_list) > s else float(s)
         end_time = stet_list[e - 1][1] if len(stet_list) >= e else float(e)
