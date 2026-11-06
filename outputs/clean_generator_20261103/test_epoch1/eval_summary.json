@@ -1,0 +1,14 @@
+{
+  "checkpoint": "/mnt/nas2/duanmo/data/CausalChapter_generator_clean_20261103/train/requested_test_snapshots/epoch1",
+  "eval_scope": "pred",
+  "evaluation_protocol": "strict",
+  "caption_matching": "lexical",
+  "gt_segmentation_forbidden": true,
+  "text_input": "/tmp/CausalChapter-repro-20261102/data/avlecture/test.jsonl",
+  "gt_boundary": null,
+  "pred_boundary": {
+    "CIDEr": 101.83,
+    "METEOR": 21.2,
+    "SODA_c": 16.0
+  }
+}

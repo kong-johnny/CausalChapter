@@ -1,5 +1,11 @@
 # Resource-bounded prediction-pipeline release plan
 
+Latest user decision, 2026-11-03: epoch3 was stopped after epoch2 dev regression.
+Epoch1 full70 test is 101.83/21.20/16.00. The user accepted this usable version
+and will manually upload a verified weight archive to Google Drive. Further
+optimization and automatic publication are superseded by packaging/handoff;
+see `DRIVE_RELEASE_HANDOFF.md`. The remainder records the historical plan.
+
 ## Material Passport
 
 - Origin Skill: experiment-agent

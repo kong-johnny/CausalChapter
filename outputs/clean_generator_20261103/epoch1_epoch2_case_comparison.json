@@ -1,0 +1,12 @@
+{
+  "chapters": 169,
+  "changed_titles": 152,
+  "changed_support_sets": 39,
+  "videos_changed_lexical_matches": 14,
+  "mean_title_words": [
+    6.520710059171598,
+    6.603550295857988
+  ],
+  "identical_all_35_video_inputs_and_times": true,
+  "interpretation": "Regression occurs with identical segmentation inputs. Model weights, generated wording and KL support choices changed. Training-loss reduction with dev regression suggests overfitting; support causality not isolated."
+}

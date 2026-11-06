@@ -36,3 +36,11 @@ outputs/*_scratch/
 *.log
 runs/
 wandb/
+
+# Manual Drive release and local orchestration artifacts.
+.DS_Store
+checkpoints/qwen2p5_3b_clean_epoch1/shared_lora/adapter_model.safetensors
+outputs/drive_release_20261103/
+scripts/queue_requested_epoch_tests.py
+scripts/run_requested_epoch1_test.py
+scripts/package_drive_epoch1.py

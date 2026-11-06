@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-03",
+  "status": "prepared_with_bnu_share_link",
+  "archive_unchanged": true,
+  "archive_sha256": "f383a3ccc8d4a98cb1fb9c70734930e178f5f09e33adb1c33b786fa43b8d7231",
+  "checks": {
+    "clean_artifacts_sha256": 30,
+    "clean_generator_tests_local": 9,
+    "split_audit_tests_local": 4,
+    "usage_guard_tests_local": 4,
+    "tokenizer_tests_local": 3,
+    "strict_generation_tests_existing_ais_environment": 6,
+    "artifact_verifier_positive_and_negative_cases": 5,
+    "entrypoint_mock_checks": 4,
+    "bash_syntax": "passed",
+    "python_compile": "passed",
+    "git_diff_check": "passed"
+  },
+  "limits": [
+    "Entrypoint checks mock Python calls; they are not new neural inference.",
+    "Drive public download and combined fresh-clone inference acceptance pending.",
+    "No generic CUDA clean environment acceptance claimed."
+  ],
+  "push_performed": false,
+  "download_url": "https://pan.bnu.edu.cn/l/N1dKPT",
+  "share_page_check": {
+    "date": "2026-11-06",
+    "anonymous_http_status": 200,
+    "expected_filename_visible": true,
+    "full_remote_archive_verified": false
+  }
+}

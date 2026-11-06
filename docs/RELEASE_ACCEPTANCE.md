@@ -1,5 +1,16 @@
 # Release acceptance: better-than-paper prediction pipeline
 
+## User-accepted usable epoch1 release (2026-11-03, latest)
+
+After reviewing the full70 test result 101.83/21.20/16.00, the user accepted
+this version for publication and requested a weight archive for manual Google
+Drive upload. This supersedes the earlier all-paper-metrics prerequisite below.
+Publish measured results and their protocol; do not describe CIDEr101.83 as
+exceeding104.59. Combined fresh-download generator-chain acceptance remains
+pending and is handed off explicitly in `DRIVE_RELEASE_HANDOFF.md`.
+The user will handle upload and other publication steps; no automatic main
+merge or renewed training is requested. Automation remains paused.
+
 ## Latest acceptance decision (2026-11-03)
 
 The latest user request is to autonomously plan legitimate, efficient experiments

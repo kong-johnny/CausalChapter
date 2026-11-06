@@ -39,7 +39,7 @@ from .evaluation.evaluator import eval_model
 # Hardcoded configuration
 # ═══════════════════════════════════════════════════════════════════
 BASE_MODEL = os.environ.get("CC_BASE_MODEL", "models/Qwen2.5-3B-Instruct")
-CHECKPOINT_DIR = os.environ.get("CC_CHECKPOINT_DIR", "output/best")
+CHECKPOINT_DIR = os.environ.get("CC_CHECKPOINT_DIR", "checkpoints/qwen2p5_3b_clean_epoch1")
 FUSION_MODE = os.environ.get("CC_FUSION_MODE", "text_only")
 CAUSAL_MODE = os.environ.get("CC_CAUSAL_MODE", "light")
 CAUSAL_TOPK = int(os.environ.get("CC_CAUSAL_TOPK", "3"))
@@ -65,12 +65,12 @@ RETRIEVAL_INTERVENTION_TOKENS = int(os.environ.get("CC_RETRIEVAL_INTERVENTION_TO
 RETRIEVAL_VARIANT_MICROBATCH = int(os.environ.get("CC_RETRIEVAL_VARIANT_MICROBATCH", "2"))
 GEN_NO_REPEAT_NGRAM_SIZE = os.environ.get("CC_GEN_NO_REPEAT_NGRAM_SIZE")
 GEN_MAX_NEW_TOKENS = os.environ.get("CC_GEN_MAX_NEW_TOKENS")
-EVAL_SCOPE = os.environ.get("CC_EVAL_SCOPE", "both").lower()  # both|gt|pred
-EVAL_SAVE_DIR = os.environ.get("CC_EVAL_SAVE_DIR", CHECKPOINT_DIR)
+EVAL_SCOPE = os.environ.get("CC_EVAL_SCOPE", "pred").lower()  # both|gt|pred
+EVAL_SAVE_DIR = os.environ.get("CC_EVAL_SAVE_DIR", "outputs/clean_epoch1_reproduced")
 TEST_PRED_BOUNDARY = os.environ.get("CC_TEST_PRED_BOUNDARY", TEST_PRED_BOUNDARY)
 EVAL_LIMIT = int(os.environ.get("CC_EVAL_LIMIT", "0"))
-EVAL_PROTOCOL = os.environ.get("CC_EVAL_PROTOCOL", "legacy")
-CAPTION_MATCHING = os.environ.get("CC_CAPTION_MATCHING", "temporal" if EVAL_PROTOCOL == "strict" else "lexical")
+EVAL_PROTOCOL = os.environ.get("CC_EVAL_PROTOCOL", "strict")
+CAPTION_MATCHING = os.environ.get("CC_CAPTION_MATCHING", "lexical")
 # ═══════════════════════════════════════════════════════════════════
 
 

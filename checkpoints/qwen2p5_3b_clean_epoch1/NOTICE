@@ -1,0 +1,10 @@
+Built with Qwen.
+Qwen is licensed under the Qwen RESEARCH LICENSE AGREEMENT, Copyright (c) Alibaba Cloud. All Rights Reserved.
+
+CausalChapter modification: AVL-domain rank32 LoRA fine-tuning of
+Qwen2.5-3B-Instruct; first-epoch dev-selected adapter, 2026-11-03.
+The adapter weights are modified/derived model materials and remain subject
+to the enclosed LICENSE-Qwen. The base model is not included.
+Tokenizer files are redistributed from the base tokenizer; original training
+metadata is retained for provenance. Local source paths are not dependencies
+when CC_BASE_MODEL is set explicitly in the reproduction command.

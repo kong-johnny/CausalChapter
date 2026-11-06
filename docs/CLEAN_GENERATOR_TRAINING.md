@@ -1,8 +1,9 @@
 # Clean train-only generator experiment
 
-Status (2026-11-03): **two-pass neural smoke passed; fresh-base formal training
-has started** on the original Torch 2.9 PPU environment. This is not a reported
-model improvement or an accepted release.
+Status (2026-11-03): epoch1 was selected on dev and accepted by the user for
+release. Epoch2 completed but regressed on dev; epoch3 was stopped at the user's
+request. The released weights are the preserved epoch1 snapshot. Full70 test
+evaluation completed. Raw records are in `outputs/clean_generator_20261103/`.
 
 ## Why a separate entry point
 
@@ -12,7 +13,7 @@ source for new clean-holdout claims. `generate/train_clean.py` does not import
 `generate/train.py` and cannot warm-start from an old adapter.
 
 The first controlled configuration uses a fresh Qwen2.5-3B base with new
-rank-32 LoRA, text-only fusion, three epochs, learning rate 2e-5, accumulation
+rank-32 LoRA, text-only fusion, up to three planned epochs, learning rate 2e-5, accumulation
 4, 4096 training tokens, 8192 inference tokens, beam 3, repetition 1.005,
 CSSE top-3, hashing candidate retrieval, seed 42. These are a predefined clean
 baseline, not parameters selected from the quarantined historical dev sweep.
@@ -81,8 +82,8 @@ audit tests, and four split-audit tests pass; CLI help and syntax compilation
 pass. These and four usage guards also passed on AIS. The real GPU smoke
 completed one update per pass (losses 1.96763 and 4.41859), generated all
 predicted chapters of the smoke train video, did not score dev, and saved no
-checkpoint. The formal run reinitializes from the base afterward. Full train /
-dev quality and long-run stability remain unverified.
+checkpoint. The formal run reinitialized from the base afterward; two complete
+epochs and their dev evaluations are retained in the experiment records.
 
 The frozen segmenter generated 1,403 train chapters over 245 videos; 1,371
 receive loss targets under the fixed training-IoU rule. An initial pre-model

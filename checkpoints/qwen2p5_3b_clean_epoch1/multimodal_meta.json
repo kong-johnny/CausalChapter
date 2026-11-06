@@ -1,0 +1,19 @@
+{
+  "base_model": "/mnt/nas2/duanmo/data/video_chapter/models/Qwen2.5-3B-Instruct",
+  "fusion_mode": "text_only",
+  "num_query_tokens": 0,
+  "causal_mode": "light",
+  "epoch": 1,
+  "selection_split": "dev",
+  "best_pred_boundary": {
+    "epoch": 1,
+    "pass1_loss": 1.6829898795622444,
+    "pass2_loss": 1.2851860548330867,
+    "CIDEr": 99.68890539523028,
+    "METEOR": 20.823998159004923,
+    "SODA_c": 18.003349520813735,
+    "split": "dev",
+    "protocol": "strict",
+    "caption_matching": "lexical"
+  }
+}

@@ -3,4 +3,4 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-python3 scripts/verify_artifacts.py --manifest MANIFEST.sha256
+python3 scripts/verify_artifacts.py --manifest MANIFEST.sha256 "$@"

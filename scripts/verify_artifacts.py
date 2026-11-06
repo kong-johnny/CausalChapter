@@ -8,19 +8,27 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", default="MANIFEST.sha256")
-    parser.add_argument("--profile", choices=["all", "lcds"], default="all")
+    parser.add_argument("--profile", choices=["all", "lcds", "clean"], default="clean")
     args = parser.parse_args()
     failures = []
+    checked = 0
     for line in Path(args.manifest).read_text(encoding="utf-8").splitlines():
         if not line.strip() or line.startswith("#"):
             continue
         expected, name = line.split(maxsplit=1)
         path = Path(name.strip())
+        if args.profile == "clean" and not (
+            str(path).startswith("checkpoints/lcds_longformer_reconstruction/")
+            or str(path).startswith("checkpoints/qwen2p5_3b_clean_epoch1/")
+            or str(path).startswith("data/avlecture/") and "eval_visual_features" not in str(path)
+        ):
+            continue
         if args.profile == "lcds" and not (str(path).startswith("checkpoints/lcds_longformer_reconstruction/")
                                             or str(path).startswith("data/avlecture/lcds_visual_features.tar.gz")):
             continue
+        checked += 1
         if not path.is_file():
-            failures.append(f"MISSING: {path}; run git lfs pull for released weights")
+            failures.append(f"MISSING: {path}; obtain the Drive weight bundle or Git LFS features as documented")
             continue
         digest = hashlib.sha256()
         with path.open("rb") as stream:
@@ -35,6 +43,8 @@ def main():
             failures.append(f"CHECKSUM MISMATCH: {path}")
         else:
             print(f"OK: {path}")
+    if not checked:
+        failures.append("No artifacts matched the selected profile")
     if failures:
         raise SystemExit("\n".join(failures))
 

@@ -1,0 +1,11 @@
+{
+  "epoch": 2,
+  "pass1_loss": 0.8677900071798624,
+  "pass2_loss": 0.40677961865834006,
+  "CIDEr": 78.47484833621998,
+  "METEOR": 19.404104517567035,
+  "SODA_c": 15.779614183771052,
+  "split": "dev",
+  "protocol": "strict",
+  "caption_matching": "lexical"
+}
